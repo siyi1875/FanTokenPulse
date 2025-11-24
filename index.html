@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSG Fan Token Pulse - Price & Events Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚽ PSG Fan Token Pulse</h1>
+            <p class="subtitle">Correlating $PSG Token Price with Paris Saint-Germain Events (Nov 2020 - Nov 2025)</p>
+        </header>
+
+        <div class="dashboard">
+            <div class="info-panel">
+                <div class="stat-card">
+                    <h3>Current Price</h3>
+                    <p id="currentPrice" class="stat-value">Loading...</p>
+                    <p class="stat-change" id="priceChange">-</p>
+                </div>
+                <div class="stat-card">
+                    <h3>All-Time High</h3>
+                    <p class="stat-value">$58.79</p>
+                    <p class="stat-date">April 2021</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Market Cap</h3>
+                    <p id="marketCap" class="stat-value">Loading...</p>
+                </div>
+                <div class="stat-card">
+                    <h3>24h Volume</h3>
+                    <p id="volume24h" class="stat-value">Loading...</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h2>$PSG Token Price History with Key Events</h2>
+                    <div class="chart-controls">
+                        <button class="time-btn active" data-days="max">All Time</button>
+                        <button class="time-btn" data-days="365">1Y</button>
+                        <button class="time-btn" data-days="180">6M</button>
+                        <button class="time-btn" data-days="90">3M</button>
+                        <button class="time-btn" data-days="30">1M</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="priceChart"></canvas>
+                </div>
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Loading price data from CoinGecko...</p>
+                </div>
+            </div>
+
+            <div class="events-timeline">
+                <h2>Key Events Timeline</h2>
+                <div class="timeline">
+                    <div class="timeline-section">
+                        <h3>🏦 Token Milestones</h3>
+                        <div class="event-item exchange">
+                            <div class="event-date">Dec 21, 2020</div>
+                            <div class="event-content">
+                                <strong>Triple Exchange Listing</strong>
+                                <p>Binance (07:00), Paribu (10:00), Upbit (13:00 CET). Price surged 198% to €32.75</p>
+                            </div>
+                        </div>
+                        <div class="event-item milestone">
+                            <div class="event-date">Apr 2021</div>
+                            <div class="event-content">
+                                <strong>All-Time High</strong>
+                                <p>$PSG reached $58.79, driven by Messi signing rumors and crypto bull market</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-section">
+                        <h3>⚽ Team Events 2020-2021</h3>
+                        <div class="event-item defeat">
+                            <div class="event-date">Aug 23, 2020</div>
+                            <div class="event-content">
+                                <strong>Champions League Final Loss</strong>
+                                <p>Lost 1-0 to Bayern Munich in first-ever CL final (before token launch)</p>
+                            </div>
+                        </div>
+                        <div class="event-item signing">
+                            <div class="event-date">Aug 2021</div>
+                            <div class="event-content">
+                                <strong>Historic Summer Signings</strong>
+                                <p>Lionel Messi, Sergio Ramos, Achraf Hakimi (€60M), Gianluigi Donnarumma, Georginio Wijnaldum</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-section">
+                        <h3>⚽ Team Events 2023-2024</h3>
+                        <div class="event-item departure">
+                            <div class="event-date">Jun 2023</div>
+                            <div class="event-content">
+                                <strong>Lionel Messi Departure</strong>
+                                <p>Messi joins Inter Miami after 2 seasons at PSG</p>
+                            </div>
+                        </div>
+                        <div class="event-item departure">
+                            <div class="event-date">Aug 15, 2023</div>
+                            <div class="event-content">
+                                <strong>Neymar to Al Hilal</strong>
+                                <p>Neymar transfers to Saudi Pro League on 2-year deal</p>
+                            </div>
+                        </div>
+                        <div class="event-item departure">
+                            <div class="event-date">May 10, 2024</div>
+                            <div class="event-content">
+                                <strong>Mbappé Announces Exit</strong>
+                                <p>Club legend confirms departure after 7 seasons</p>
+                            </div>
+                        </div>
+                        <div class="event-item departure">
+                            <div class="event-date">Jun 3, 2024</div>
+                            <div class="event-content">
+                                <strong>Mbappé Joins Real Madrid</strong>
+                                <p>Officially signs 5-year deal with Real Madrid</p>
+                            </div>
+                        </div>
+                        <div class="event-item signing">
+                            <div class="event-date">Aug 2024</div>
+                            <div class="event-content">
+                                <strong>New Era Signings</strong>
+                                <p>João Neves (€70M from Benfica), Désiré Doué (€50M), William Pacho (€40M)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-sources">
+                <h3>Data Sources</h3>
+                <ul>
+                    <li><strong>Price Data:</strong> <a href="https://www.coingecko.com/en/coins/paris-saint-germain-fan-token" target="_blank">CoinGecko API</a></li>
+                    <li><strong>Team Events:</strong> Transfermarkt, Goal.com, ESPN, Official PSG sources</li>
+                    <li><strong>Last Updated:</strong> <span id="lastUpdated">-</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>Built with ❤️ for PSG fans | Data from CoinGecko API | Not financial advice</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
