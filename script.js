@@ -524,8 +524,8 @@ function createPriceChart() {
                     borderColor: '#ffffff',
                     borderWidth: 2,
                     pointRadius: 8,
-                    pointHoverRadius: 12,
-                    pointHitRadius: 15,
+                    pointHoverRadius: 14,
+                    pointHitRadius: 30,
                     order: 1
                 }
             ]
