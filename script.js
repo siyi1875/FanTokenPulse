@@ -257,59 +257,59 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderTimeline();
 
     // Load data asynchronously
-    await Promise.all([
-        loadCurrentStats(),
-        loadMarketCap() // Fetch market cap separately from CoinMarketCap
-    ]);
+    await loadCurrentStats(); // Fetch current price, market cap, and volume from CoinGecko
     await loadHistoricalData(); // This calculates price changes and updates timeline
     setupEventListeners();
     updateLastUpdatedTime();
 });
 
-// Fetch current token statistics from Binance
+// Fetch current token statistics from CoinGecko
 async function loadCurrentStats() {
     try {
-        console.log('Fetching current stats from Binance...');
-        const url = `${BINANCE_API}/ticker/24hr?symbol=${PSG_PAIR}`;
-        const response = await fetch(url);
+        console.log('Fetching current stats from CoinGecko...');
+        const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}?localization=false&tickers=false&community_data=false&developer_data=false`;
+        const data = await fetchWithProxy(url);
 
-        if (!response.ok) {
-            throw new Error(`Binance API error: ${response.status}`);
+        if (data.market_data) {
+            const currentPrice = data.market_data.current_price.usd;
+            const priceChange24h = data.market_data.price_change_percentage_24h;
+            const marketCap = data.market_data.market_cap.usd;
+            const volume24h = data.market_data.total_volume.usd;
+
+            document.getElementById('currentPrice').textContent = `$${currentPrice.toFixed(4)}`;
+            document.getElementById('priceChange').textContent = `${priceChange24h >= 0 ? '+' : ''}${priceChange24h.toFixed(2)}%`;
+            document.getElementById('priceChange').className = `stat-change ${priceChange24h >= 0 ? 'positive' : 'negative'}`;
+            document.getElementById('marketCap').textContent = `$${formatLargeNumber(marketCap)}`;
+            document.getElementById('marketCapLabel').textContent = 'Market Cap';
+            document.getElementById('volume24h').textContent = `$${formatLargeNumber(volume24h)}`;
+            console.log('✅ CoinGecko data loaded successfully');
         }
-
-        const data = await response.json();
-        console.log('✅ Binance data received:', data);
-
-        const currentPrice = parseFloat(data.lastPrice);
-        const priceChange24h = parseFloat(data.priceChangePercent);
-        const volume24h = parseFloat(data.quoteVolume); // Volume in USDT
-
-        document.getElementById('currentPrice').textContent = `$${currentPrice.toFixed(4)}`;
-        document.getElementById('priceChange').textContent = `${priceChange24h >= 0 ? '+' : ''}${priceChange24h.toFixed(2)}%`;
-        document.getElementById('priceChange').className = `stat-change ${priceChange24h >= 0 ? 'positive' : 'negative'}`;
-        document.getElementById('volume24h').textContent = `$${formatLargeNumber(volume24h)}`;
     } catch (error) {
-        console.error('❌ Error fetching from Binance:', error);
-        console.log('Trying CoinGecko as fallback...');
+        console.error('❌ Error fetching from CoinGecko:', error);
+        console.log('Trying Binance as fallback...');
 
-        // Fallback to CoinGecko
+        // Fallback to Binance (price and volume only, no market cap)
         try {
-            const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}?localization=false&tickers=false&community_data=false&developer_data=false`;
-            const data = await fetchWithProxy(url);
+            const url = `${BINANCE_API}/ticker/24hr?symbol=${PSG_PAIR}`;
+            const response = await fetch(url);
 
-            if (data.market_data) {
-                const currentPrice = data.market_data.current_price.usd;
-                const priceChange24h = data.market_data.price_change_percentage_24h;
-                const marketCap = data.market_data.market_cap.usd;
-                const volume24h = data.market_data.total_volume.usd;
-
-                document.getElementById('currentPrice').textContent = `$${currentPrice.toFixed(4)}`;
-                document.getElementById('priceChange').textContent = `${priceChange24h >= 0 ? '+' : ''}${priceChange24h.toFixed(2)}%`;
-                document.getElementById('priceChange').className = `stat-change ${priceChange24h >= 0 ? 'positive' : 'negative'}`;
-                document.getElementById('marketCap').textContent = `$${formatLargeNumber(marketCap)}`;
-                document.getElementById('volume24h').textContent = `$${formatLargeNumber(volume24h)}`;
-                console.log('✅ Loaded from CoinGecko fallback');
+            if (!response.ok) {
+                throw new Error(`Binance API error: ${response.status}`);
             }
+
+            const data = await response.json();
+            console.log('✅ Binance data received:', data);
+
+            const currentPrice = parseFloat(data.lastPrice);
+            const priceChange24h = parseFloat(data.priceChangePercent);
+            const volume24h = parseFloat(data.quoteVolume); // Volume in USDT
+
+            document.getElementById('currentPrice').textContent = `$${currentPrice.toFixed(4)}`;
+            document.getElementById('priceChange').textContent = `${priceChange24h >= 0 ? '+' : ''}${priceChange24h.toFixed(2)}%`;
+            document.getElementById('priceChange').className = `stat-change ${priceChange24h >= 0 ? 'positive' : 'negative'}`;
+            document.getElementById('volume24h').textContent = `$${formatLargeNumber(volume24h)}`;
+            document.getElementById('marketCap').textContent = 'N/A';
+            console.log('✅ Loaded from Binance fallback (no market cap available)');
         } catch (fallbackError) {
             console.error('❌ Both APIs failed:', fallbackError);
             document.getElementById('currentPrice').textContent = 'API Unavailable';
@@ -824,70 +824,3 @@ setInterval(() => {
     loadCurrentStats();
     updateLastUpdatedTime();
 }, 5 * 60 * 1000);
-
-// Fetch market cap from CoinMarketCap with CORS proxy fallback
-async function loadMarketCap() {
-    try {
-        console.log('Fetching market cap from CoinMarketCap...');
-
-        // Try direct API call first
-        let data = null;
-        const url = `${COINMARKETCAP_API}/cryptocurrency/quotes/latest?id=${CMC_PSG_ID}`;
-
-        try {
-            const response = await fetch(url);
-            if (response.ok) {
-                data = await response.json();
-            }
-        } catch (directError) {
-            console.log('Direct CMC call failed, trying with CORS proxy...');
-            // Try with CORS proxy
-            for (let proxy of CORS_PROXIES) {
-                try {
-                    const proxyUrl = `${proxy}${encodeURIComponent(url)}`;
-                    const response = await fetch(proxyUrl);
-                    if (response.ok) {
-                        const text = await response.text();
-                        data = JSON.parse(text);
-                        break;
-                    }
-                } catch (proxyError) {
-                    console.log(`Proxy ${proxy} failed for CMC`);
-                    continue;
-                }
-            }
-        }
-
-        if (data && data.data && data.data[CMC_PSG_ID]) {
-            const quote = data.data[CMC_PSG_ID].quote.USD;
-            const circulatingMarketCap = quote.market_cap; // Circulating supply market cap
-
-            document.getElementById('marketCap').textContent = `$${formatLargeNumber(circulatingMarketCap)}`;
-            document.getElementById('marketCapLabel').textContent = 'Circulating Market Cap';
-            console.log('✅ Market cap loaded:', circulatingMarketCap);
-            return;
-        }
-
-        throw new Error('No data from CMC');
-    } catch (error) {
-        console.error('❌ Error fetching from CoinMarketCap:', error);
-
-        // Fallback to CoinGecko for market cap
-        console.log('Trying CoinGecko for market cap...');
-        try {
-            const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}?localization=false&tickers=false&community_data=false&developer_data=false`;
-            const data = await fetchWithProxy(url);
-
-            if (data.market_data && data.market_data.market_cap) {
-                const marketCap = data.market_data.market_cap.usd;
-                document.getElementById('marketCap').textContent = `$${formatLargeNumber(marketCap)}`;
-                document.getElementById('marketCapLabel').textContent = 'Market Cap';
-                console.log('✅ Market cap loaded from CoinGecko:', marketCap);
-            }
-        } catch (fallbackError) {
-            console.error('❌ Both CMC and CoinGecko failed for market cap');
-            document.getElementById('marketCap').textContent = 'N/A';
-            document.getElementById('marketCapLabel').textContent = 'Market Cap';
-        }
-    }
-}
