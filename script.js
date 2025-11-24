@@ -1,8 +1,10 @@
 // PSG Fan Token Dashboard Script
-// Data source: Binance API (primary) with CoinGecko fallback
+// Data source: Binance API (primary), CoinMarketCap (market cap), CoinGecko (fallback)
 
 const BINANCE_API = 'https://api.binance.com/api/v3';
 const PSG_PAIR = 'PSGUSDT';
+const COINMARKETCAP_API = 'https://api.coinmarketcap.com/data-api/v3';
+const CMC_PSG_ID = '8186'; // PSG token ID on CoinMarketCap
 const COINGECKO_API = 'https://api.coingecko.com/api/v3';
 const PSG_TOKEN_ID = 'paris-saint-germain-fan-token';
 
@@ -12,7 +14,7 @@ const CORS_PROXIES = [
     'https://api.allorigins.win/raw?url='
 ];
 
-// Key events data structure with match results and token milestones
+// Key events data structure with match results, token milestones, and rumors
 // Token launched in November 2020, so only events from Nov 2020 onwards
 const keyEvents = [
     // Exchange listings
@@ -57,6 +59,14 @@ const keyEvents = [
         type: 'trophy-loss',
         category: 'ligue1',
         color: 'rgba(239, 68, 68, 0.3)'
+    },
+    {
+        date: '2021-08-05',
+        label: '💭 Messi Transfer Rumors Heat Up',
+        description: 'Reports emerge Messi leaving Barcelona, PSG frontrunner',
+        type: 'rumor',
+        category: 'transfer',
+        color: 'rgba(168, 85, 247, 0.3)'
     },
     {
         date: '2021-08-10',
@@ -223,7 +233,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderTimeline();
 
     // Load data asynchronously
-    await loadCurrentStats();
+    await Promise.all([
+        loadCurrentStats(),
+        loadMarketCap() // Fetch market cap separately from CoinMarketCap
+    ]);
     await loadHistoricalData(); // This calculates price changes and updates timeline
     setupEventListeners();
     updateLastUpdatedTime();
@@ -250,7 +263,6 @@ async function loadCurrentStats() {
         document.getElementById('currentPrice').textContent = `$${currentPrice.toFixed(4)}`;
         document.getElementById('priceChange').textContent = `${priceChange24h >= 0 ? '+' : ''}${priceChange24h.toFixed(2)}%`;
         document.getElementById('priceChange').className = `stat-change ${priceChange24h >= 0 ? 'positive' : 'negative'}`;
-        document.getElementById('marketCap').textContent = 'N/A'; // Binance doesn't provide market cap
         document.getElementById('volume24h').textContent = `$${formatLargeNumber(volume24h)}`;
     } catch (error) {
         console.error('❌ Error fetching from Binance:', error);
@@ -506,7 +518,7 @@ function createPriceChart() {
                     bodyColor: '#e5e7eb',
                     borderColor: '#374151',
                     borderWidth: 1,
-                    padding: 12,
+                    padding: 16,
                     displayColors: false,
                     callbacks: {
                         title: (context) => {
@@ -518,6 +530,32 @@ function createPriceChart() {
                         },
                         label: (context) => {
                             return `Price: $${context.parsed.y.toFixed(4)}`;
+                        },
+                        afterBody: (context) => {
+                            // Check if there's an event near this date
+                            const hoveredDate = new Date(context[0].parsed.x);
+                            const hoveredTimestamp = hoveredDate.getTime();
+
+                            // Find events within 24 hours of hovered date
+                            const nearbyEvents = keyEvents.filter(event => {
+                                const eventDate = new Date(event.date);
+                                const diff = Math.abs(eventDate.getTime() - hoveredTimestamp);
+                                return diff < 86400000; // Within 24 hours
+                            });
+
+                            if (nearbyEvents.length > 0) {
+                                const lines = ['\n━━━━━━━━━━━━━━━━━━━━━━━'];
+                                nearbyEvents.forEach(event => {
+                                    lines.push('\n🎯 KEY EVENT:');
+                                    lines.push(event.label);
+                                    lines.push('\n' + event.description);
+                                    if (event.priceChange) {
+                                        lines.push('\nPrice Change: ' + event.priceChange);
+                                    }
+                                });
+                                return lines;
+                            }
+                            return [];
                         }
                     }
                 },
@@ -682,3 +720,31 @@ setInterval(() => {
     loadCurrentStats();
     updateLastUpdatedTime();
 }, 5 * 60 * 1000);
+
+// Fetch market cap from CoinMarketCap
+async function loadMarketCap() {
+    try {
+        console.log('Fetching market cap from CoinMarketCap...');
+        const url = `${COINMARKETCAP_API}/cryptocurrency/quotes/latest?id=${CMC_PSG_ID}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`CoinMarketCap API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ CoinMarketCap data received:', data);
+
+        if (data.data && data.data[CMC_PSG_ID]) {
+            const quote = data.data[CMC_PSG_ID].quote.USD;
+            const circulatingMarketCap = quote.market_cap; // Circulating supply market cap
+
+            document.getElementById('marketCap').textContent = `$${formatLargeNumber(circulatingMarketCap)}`;
+            document.getElementById('marketCapLabel').textContent = 'Circulating Market Cap';
+        }
+    } catch (error) {
+        console.error('❌ Error fetching from CoinMarketCap:', error);
+        document.getElementById('marketCap').textContent = 'N/A';
+        document.getElementById('marketCapLabel').textContent = 'Market Cap';
+    }
+}

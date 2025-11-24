@@ -1,18 +1,38 @@
-/* PSG Fan Token Pulse Dashboard Styles */
+/* PSG Fan Token Pulse - Modern Clean Design */
+/* Inspired by PSG.fr and Socios.com */
 
 :root {
-    --primary-blue: #3b82f6;
+    /* PSG Official Colors */
     --psg-blue: #004170;
-    --psg-red: #da0037;
-    --bg-dark: #0f172a;
-    --bg-card: #1e293b;
-    --bg-card-hover: #334155;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --border-color: #334155;
-    --success: #22c55e;
-    --warning: #eab308;
-    --danger: #ef4444;
+    --psg-red: #DA0036;
+    --psg-navy: #00245C;
+
+    /* UI Colors - Clean & Modern */
+    --primary: #004170;
+    --accent: #DA0036;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --purple: #8B5CF6;
+
+    /* Neutral Colors */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8FAFC;
+    --bg-card: #FFFFFF;
+    --bg-hover: #F1F5F9;
+    --border: #E2E8F0;
+    --border-light: #F1F5F9;
+
+    /* Text Colors */
+    --text-primary: #0F172A;
+    --text-secondary: #64748B;
+    --text-muted: #94A3B8;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -22,53 +42,59 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, var(--bg-dark) 0%, #1a2332 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    background: var(--bg-secondary);
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1440px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0;
 }
 
-/* Header */
+/* Header - Clean PSG Style */
 header {
-    text-align: center;
-    padding: 40px 20px;
-    background: linear-gradient(135deg, var(--psg-blue) 0%, var(--psg-red) 100%);
-    border-radius: 16px;
-    margin-bottom: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    background: var(--psg-blue);
+    padding: 40px 32px;
+    color: white;
+    border-bottom: 4px solid var(--psg-red);
 }
 
-header h1 {
-    font-size: 3rem;
-    margin-bottom: 10px;
+.header-content {
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+.logo-section h1 {
+    font-size: 2.5rem;
     font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
 }
 
 .subtitle {
     font-size: 1.1rem;
-    opacity: 0.95;
-    font-weight: 300;
+    opacity: 0.9;
+    font-weight: 400;
 }
 
 /* Dashboard Layout */
 .dashboard {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 24px;
+    padding: 32px;
+    max-width: 1440px;
+    margin: 0 auto;
 }
 
-/* Info Panel */
+/* Info Panel - Modern Cards */
 .info-panel {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 20px;
 }
 
@@ -76,19 +102,20 @@ header h1 {
     background: var(--bg-card);
     padding: 24px;
     border-radius: 12px;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
 }
 
 .stat-card:hover {
-    background: var(--bg-card-hover);
+    box-shadow: var(--shadow-md);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border-color: var(--psg-blue);
 }
 
 .stat-card h3 {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -98,12 +125,12 @@ header h1 {
 .stat-value {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--primary-blue);
-    margin-bottom: 8px;
+    color: var(--psg-blue);
+    margin-bottom: 4px;
 }
 
 .stat-change {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
 }
 
@@ -115,32 +142,39 @@ header h1 {
     color: var(--danger);
 }
 
+.stat-sublabel {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
 .stat-date {
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     color: var(--text-secondary);
 }
 
-/* Chart Container */
+/* Chart Container - Clean Card */
 .chart-container {
     background: var(--bg-card);
-    padding: 30px;
+    padding: 32px;
     border-radius: 12px;
-    border: 1px solid var(--border-color);
-    position: relative;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
 }
 
 .chart-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
     flex-wrap: wrap;
     gap: 16px;
 }
 
 .chart-header h2 {
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--text-primary);
 }
 
 .chart-controls {
@@ -149,25 +183,25 @@ header h1 {
 }
 
 .time-btn {
-    background: var(--bg-dark);
+    background: var(--bg-secondary);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
     padding: 8px 16px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 500;
     transition: all 0.2s ease;
 }
 
 .time-btn:hover {
-    background: var(--bg-card-hover);
-    border-color: var(--primary-blue);
+    background: var(--bg-hover);
+    border-color: var(--psg-blue);
 }
 
 .time-btn.active {
-    background: var(--primary-blue);
-    border-color: var(--primary-blue);
+    background: var(--psg-blue);
+    border-color: var(--psg-blue);
     color: white;
 }
 
@@ -186,8 +220,8 @@ header h1 {
 }
 
 .spinner {
-    border: 4px solid var(--border-color);
-    border-top: 4px solid var(--primary-blue);
+    border: 4px solid var(--border);
+    border-top: 4px solid var(--psg-blue);
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -200,23 +234,25 @@ header h1 {
     100% { transform: rotate(360deg); }
 }
 
-/* Events Timeline */
+/* Events Timeline - Clean & Modern */
 .events-timeline {
     background: var(--bg-card);
-    padding: 30px;
+    padding: 32px;
     border-radius: 12px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
 }
 
 .events-timeline h2 {
     font-size: 1.5rem;
-    margin-bottom: 12px;
-    font-weight: 600;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
 }
 
 .timeline-note {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     margin-bottom: 24px;
 }
 
@@ -236,38 +272,22 @@ header h1 {
 .timeline {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-}
-
-.timeline-section h3 {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid var(--border-color);
-}
-
-.season-header {
-    color: var(--primary-blue);
-    font-size: 1rem;
-    margin: 20px 0 12px 0;
-    font-weight: 600;
-    opacity: 0.9;
+    gap: 16px;
 }
 
 .event-item {
     display: flex;
     gap: 20px;
-    padding: 16px;
-    background: var(--bg-dark);
-    border-radius: 8px;
-    border-left: 4px solid var(--primary-blue);
-    margin-bottom: 12px;
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    border-left: 4px solid var(--primary);
     transition: all 0.2s ease;
 }
 
 .event-item:hover {
-    background: var(--bg-card-hover);
+    background: var(--bg-hover);
+    box-shadow: var(--shadow-sm);
     transform: translateX(4px);
 }
 
@@ -280,7 +300,7 @@ header h1 {
 }
 
 .event-item.signing {
-    border-left-color: var(--primary-blue);
+    border-left-color: var(--psg-blue);
 }
 
 .event-item.departure {
@@ -288,7 +308,7 @@ header h1 {
 }
 
 .event-item.defeat {
-    border-left-color: #6b7280;
+    border-left-color: var(--text-muted);
 }
 
 .event-item.victory {
@@ -297,14 +317,19 @@ header h1 {
 
 .event-item.trophy {
     border-left-color: var(--warning);
-    background: linear-gradient(90deg, rgba(234, 179, 8, 0.1) 0%, var(--bg-dark) 100%);
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.05) 0%, var(--bg-secondary) 100%);
+}
+
+.event-item.rumor {
+    border-left-color: var(--purple);
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.05) 0%, var(--bg-secondary) 100%);
 }
 
 .event-date {
     font-weight: 700;
-    color: var(--primary-blue);
-    min-width: 120px;
-    font-size: 0.95rem;
+    color: var(--psg-blue);
+    min-width: 110px;
+    font-size: 0.875rem;
 }
 
 .event-content {
@@ -316,6 +341,7 @@ header h1 {
     font-size: 1.05rem;
     margin-bottom: 6px;
     color: var(--text-primary);
+    font-weight: 600;
 }
 
 .event-content p {
@@ -327,41 +353,48 @@ header h1 {
 
 .price-badge {
     display: inline-block;
-    padding: 4px 10px;
+    padding: 4px 12px;
     border-radius: 6px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    background: var(--border-color);
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
     color: var(--text-primary);
     margin-top: 6px;
 }
 
 .price-badge.positive {
-    background: rgba(34, 197, 94, 0.2);
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--success);
     color: var(--success);
 }
 
 .price-badge.negative {
-    background: rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--danger);
     color: var(--danger);
 }
 
 .price-badge.neutral {
-    background: var(--border-color);
-    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border-color: var(--border);
+    color: var(--text-muted);
 }
 
 /* Data Sources */
 .data-sources {
     background: var(--bg-card);
-    padding: 24px;
+    padding: 24px 32px;
     border-radius: 12px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
 }
 
 .data-sources h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
     margin-bottom: 16px;
+    color: var(--text-primary);
 }
 
 .data-sources ul {
@@ -371,33 +404,34 @@ header h1 {
 .data-sources li {
     padding: 8px 0;
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .data-sources a {
-    color: var(--primary-blue);
+    color: var(--psg-blue);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
 }
 
 .data-sources a:hover {
-    color: #60a5fa;
+    color: var(--psg-red);
     text-decoration: underline;
 }
 
 /* Footer */
 footer {
     text-align: center;
-    padding: 30px 20px;
+    padding: 32px 20px;
     color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin-top: 40px;
+    font-size: 0.875rem;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    header h1 {
+    .logo-section h1 {
         font-size: 2rem;
     }
 
@@ -405,17 +439,27 @@ footer {
         font-size: 0.95rem;
     }
 
+    .dashboard {
+        padding: 20px;
+    }
+
     .info-panel {
         grid-template-columns: 1fr;
+    }
+
+    .chart-container,
+    .events-timeline,
+    .data-sources {
+        padding: 20px;
+    }
+
+    .chart-wrapper {
+        height: 400px;
     }
 
     .chart-header {
         flex-direction: column;
         align-items: flex-start;
-    }
-
-    .chart-wrapper {
-        height: 400px;
     }
 
     .chart-controls {
@@ -426,7 +470,7 @@ footer {
     .time-btn {
         flex: 1;
         padding: 8px 12px;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
 
     .event-item {
@@ -440,21 +484,15 @@ footer {
 }
 
 @media (max-width: 480px) {
-    .container {
-        padding: 10px;
-    }
-
     header {
-        padding: 24px 16px;
+        padding: 24px 20px;
     }
 
-    .chart-container,
-    .events-timeline,
-    .data-sources {
-        padding: 20px;
+    .dashboard {
+        padding: 16px;
     }
 
     .stat-value {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
     }
 }
