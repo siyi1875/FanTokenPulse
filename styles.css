@@ -210,8 +210,15 @@ header h1 {
 
 .events-timeline h2 {
     font-size: 1.5rem;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
     font-weight: 600;
+}
+
+.timeline-note {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-bottom: 24px;
 }
 
 .timeline {
@@ -226,6 +233,14 @@ header h1 {
     margin-bottom: 16px;
     padding-bottom: 8px;
     border-bottom: 2px solid var(--border-color);
+}
+
+.season-header {
+    color: var(--primary-blue);
+    font-size: 1rem;
+    margin: 20px 0 12px 0;
+    font-weight: 600;
+    opacity: 0.9;
 }
 
 .event-item {
@@ -264,11 +279,24 @@ header h1 {
     border-left-color: #6b7280;
 }
 
+.event-item.victory {
+    border-left-color: var(--success);
+}
+
+.event-item.trophy {
+    border-left-color: var(--warning);
+    background: linear-gradient(90deg, rgba(234, 179, 8, 0.1) 0%, var(--bg-dark) 100%);
+}
+
 .event-date {
     font-weight: 700;
     color: var(--primary-blue);
     min-width: 120px;
     font-size: 0.95rem;
+}
+
+.event-content {
+    flex: 1;
 }
 
 .event-content strong {
@@ -282,6 +310,28 @@ header h1 {
     color: var(--text-secondary);
     font-size: 0.9rem;
     line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.price-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: var(--border-color);
+    color: var(--text-primary);
+    margin-top: 6px;
+}
+
+.price-badge.positive {
+    background: rgba(34, 197, 94, 0.2);
+    color: var(--success);
+}
+
+.price-badge.negative {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--danger);
 }
 
 /* Data Sources */
