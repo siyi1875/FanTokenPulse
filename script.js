@@ -561,6 +561,29 @@ function createPriceChart() {
                 },
                 annotation: {
                     annotations: annotations
+                },
+                zoom: {
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                            speed: 0.1
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'x'
+                    },
+                    pan: {
+                        enabled: true,
+                        mode: 'x',
+                        modifierKey: null
+                    },
+                    limits: {
+                        x: {
+                            min: 'original',
+                            max: 'original'
+                        }
+                    }
                 }
             },
             scales: {
@@ -604,7 +627,7 @@ function createPriceChart() {
     priceChart = new Chart(ctx, config);
 }
 
-// Setup event listeners for time range buttons
+// Setup event listeners for time range buttons and reset zoom
 function setupEventListeners() {
     const timeButtons = document.querySelectorAll('.time-btn');
     timeButtons.forEach(button => {
@@ -616,6 +639,14 @@ function setupEventListeners() {
             filterDataByTimeRange(days);
         });
     });
+
+    // Reset zoom button
+    const resetZoomBtn = document.getElementById('resetZoomBtn');
+    if (resetZoomBtn && priceChart) {
+        resetZoomBtn.addEventListener('click', () => {
+            priceChart.resetZoom();
+        });
+    }
 }
 
 // Filter data based on selected time range
@@ -624,6 +655,7 @@ function filterDataByTimeRange(days) {
 
     if (days === 'max') {
         priceChart.data.datasets[0].data = allPriceData;
+        priceChart.resetZoom(); // Reset zoom when changing time range
     } else {
         const daysNum = parseInt(days);
         const cutoffDate = new Date();
@@ -631,9 +663,14 @@ function filterDataByTimeRange(days) {
 
         const filteredData = allPriceData.filter(point => point.x >= cutoffDate);
         priceChart.data.datasets[0].data = filteredData;
+        priceChart.resetZoom(); // Reset zoom when changing time range
     }
 
+    // Update chart and re-render annotations for the new time range
     priceChart.update();
+
+    // Re-render timeline with filtered events
+    renderTimeline(days);
 }
 
 // Utility function to format large numbers
@@ -662,15 +699,30 @@ function updateLastUpdatedTime() {
 }
 
 // Render timeline with events in chronological order
-function renderTimeline() {
+function renderTimeline(days = 'max') {
     const container = document.getElementById('timelineContainer');
 
     // Sort events chronologically
-    const sortedEvents = [...keyEvents].sort((a, b) => new Date(a.date) - new Date(b.date));
+    let sortedEvents = [...keyEvents].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // Filter events based on time range if not 'max'
+    if (days !== 'max') {
+        const daysNum = parseInt(days);
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - daysNum);
+
+        sortedEvents = sortedEvents.filter(event => {
+            const eventDate = new Date(event.date);
+            return eventDate >= cutoffDate;
+        });
+    }
 
     let timelineHTML = '';
 
-    sortedEvents.forEach(event => {
+    if (sortedEvents.length === 0) {
+        timelineHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No events in this time range.</p>';
+    } else {
+        sortedEvents.forEach(event => {
         const eventDate = new Date(event.date);
         const formattedDate = eventDate.toLocaleDateString('en-US', {
             year: 'numeric',
@@ -700,17 +752,18 @@ function renderTimeline() {
             priceBadgeHTML = '<span class="price-badge neutral">Price: N/A</span>';
         }
 
-        timelineHTML += `
-            <div class="event-item ${eventClass}">
-                <div class="event-date">${formattedDate}</div>
-                <div class="event-content">
-                    <strong>${event.label}</strong>
-                    <p>${event.description}</p>
-                    ${priceBadgeHTML}
+            timelineHTML += `
+                <div class="event-item ${eventClass}">
+                    <div class="event-date">${formattedDate}</div>
+                    <div class="event-content">
+                        <strong>${event.label}</strong>
+                        <p>${event.description}</p>
+                        ${priceBadgeHTML}
+                    </div>
                 </div>
-            </div>
-        `;
-    });
+            `;
+        });
+    }
 
     container.innerHTML = timelineHTML;
 }
@@ -721,30 +774,69 @@ setInterval(() => {
     updateLastUpdatedTime();
 }, 5 * 60 * 1000);
 
-// Fetch market cap from CoinMarketCap
+// Fetch market cap from CoinMarketCap with CORS proxy fallback
 async function loadMarketCap() {
     try {
         console.log('Fetching market cap from CoinMarketCap...');
-        const url = `${COINMARKETCAP_API}/cryptocurrency/quotes/latest?id=${CMC_PSG_ID}`;
-        const response = await fetch(url);
 
-        if (!response.ok) {
-            throw new Error(`CoinMarketCap API error: ${response.status}`);
+        // Try direct API call first
+        let data = null;
+        const url = `${COINMARKETCAP_API}/cryptocurrency/quotes/latest?id=${CMC_PSG_ID}`;
+
+        try {
+            const response = await fetch(url);
+            if (response.ok) {
+                data = await response.json();
+            }
+        } catch (directError) {
+            console.log('Direct CMC call failed, trying with CORS proxy...');
+            // Try with CORS proxy
+            for (let proxy of CORS_PROXIES) {
+                try {
+                    const proxyUrl = `${proxy}${encodeURIComponent(url)}`;
+                    const response = await fetch(proxyUrl);
+                    if (response.ok) {
+                        const text = await response.text();
+                        data = JSON.parse(text);
+                        break;
+                    }
+                } catch (proxyError) {
+                    console.log(`Proxy ${proxy} failed for CMC`);
+                    continue;
+                }
+            }
         }
 
-        const data = await response.json();
-        console.log('✅ CoinMarketCap data received:', data);
-
-        if (data.data && data.data[CMC_PSG_ID]) {
+        if (data && data.data && data.data[CMC_PSG_ID]) {
             const quote = data.data[CMC_PSG_ID].quote.USD;
             const circulatingMarketCap = quote.market_cap; // Circulating supply market cap
 
             document.getElementById('marketCap').textContent = `$${formatLargeNumber(circulatingMarketCap)}`;
             document.getElementById('marketCapLabel').textContent = 'Circulating Market Cap';
+            console.log('✅ Market cap loaded:', circulatingMarketCap);
+            return;
         }
+
+        throw new Error('No data from CMC');
     } catch (error) {
         console.error('❌ Error fetching from CoinMarketCap:', error);
-        document.getElementById('marketCap').textContent = 'N/A';
-        document.getElementById('marketCapLabel').textContent = 'Market Cap';
+
+        // Fallback to CoinGecko for market cap
+        console.log('Trying CoinGecko for market cap...');
+        try {
+            const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}?localization=false&tickers=false&community_data=false&developer_data=false`;
+            const data = await fetchWithProxy(url);
+
+            if (data.market_data && data.market_data.market_cap) {
+                const marketCap = data.market_data.market_cap.usd;
+                document.getElementById('marketCap').textContent = `$${formatLargeNumber(marketCap)}`;
+                document.getElementById('marketCapLabel').textContent = 'Market Cap';
+                console.log('✅ Market cap loaded from CoinGecko:', marketCap);
+            }
+        } catch (fallbackError) {
+            console.error('❌ Both CMC and CoinGecko failed for market cap');
+            document.getElementById('marketCap').textContent = 'N/A';
+            document.getElementById('marketCapLabel').textContent = 'Market Cap';
+        }
     }
 }
