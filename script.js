@@ -4,8 +4,12 @@
 const COINGECKO_API = 'https://api.coingecko.com/api/v3';
 const PSG_TOKEN_ID = 'paris-saint-germain-fan-token';
 
-// CORS proxy to bypass browser CORS restrictions
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+// Multiple CORS proxies as fallbacks
+const CORS_PROXIES = [
+    'https://corsproxy.io/?',
+    'https://api.allorigins.win/raw?url=',
+    'https://cors-anywhere.herokuapp.com/'
+];
 
 // Key events data structure with match results and token milestones
 // Token launched in November 2020, so only events from Nov 2020 onwards
@@ -224,32 +228,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateLastUpdatedTime();
 });
 
+// Fetch with multiple proxy fallbacks
+async function fetchWithProxy(url) {
+    // Try first CORS proxy
+    for (let proxy of CORS_PROXIES) {
+        try {
+            console.log(`Trying proxy: ${proxy}`);
+            const proxyUrl = `${proxy}${encodeURIComponent(url)}`;
+            const response = await fetch(proxyUrl);
+
+            if (response.ok) {
+                return await response.json();
+            }
+        } catch (error) {
+            console.log(`Proxy ${proxy} failed:`, error);
+            continue; // Try next proxy
+        }
+    }
+
+    throw new Error('All proxies failed');
+}
+
 // Fetch current token statistics
 async function loadCurrentStats() {
     try {
-        // Try direct API first
-        let url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}?localization=false&tickers=false&community_data=false&developer_data=false`;
-        let response;
+        const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}?localization=false&tickers=false&community_data=false&developer_data=false`;
+        console.log('Fetching current stats...');
 
-        try {
-            response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                }
-            });
-        } catch (corsError) {
-            // If CORS error, use proxy
-            console.log('CORS blocked, using proxy...');
-            url = `${CORS_PROXY}${encodeURIComponent(url)}`;
-            response = await fetch(url);
-        }
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await fetchWithProxy(url);
 
         if (data.market_data) {
             const currentPrice = data.market_data.current_price.usd;
@@ -275,29 +281,10 @@ async function loadCurrentStats() {
 // Fetch historical price data
 async function loadHistoricalData() {
     try {
-        let url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}/market_chart?vs_currency=usd&days=max&interval=daily`;
-        console.log('Fetching historical data from:', url);
+        const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}/market_chart?vs_currency=usd&days=max&interval=daily`;
+        console.log('Fetching historical data...');
 
-        let response;
-        try {
-            response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                }
-            });
-        } catch (corsError) {
-            // If CORS error, use proxy
-            console.log('CORS blocked, using proxy for historical data...');
-            url = `${CORS_PROXY}${encodeURIComponent(url)}`;
-            response = await fetch(url);
-        }
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await fetchWithProxy(url);
         console.log('Received data:', data);
 
         if (data.prices && data.prices.length > 0) {
@@ -310,7 +297,7 @@ async function loadHistoricalData() {
                     y: price
                 }));
 
-            console.log(`Loaded ${allPriceData.length} price data points`);
+            console.log(`✅ Loaded ${allPriceData.length} price data points`);
 
             // Calculate price changes for events
             calculateEventPriceChanges();
@@ -322,16 +309,13 @@ async function loadHistoricalData() {
             throw new Error('No price data available');
         }
     } catch (error) {
-        console.error('Error fetching historical data:', error);
+        console.error('❌ Error fetching historical data:', error);
         document.getElementById('loadingIndicator').innerHTML = `
-            <p style="color: #ef4444; margin-bottom: 12px;">⚠️ Unable to load price chart from CoinGecko API</p>
-            <p style="color: #9ca3af; font-size: 0.9rem;">Possible causes:</p>
-            <ul style="color: #9ca3af; font-size: 0.85rem; margin-top: 8px; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto;">
-                <li>CORS restrictions (browser security)</li>
-                <li>API rate limiting (30 calls/min free tier)</li>
-                <li>Network connectivity issues</li>
-            </ul>
-            <p style="color: #9ca3af; margin-top: 12px; font-size: 0.9rem;">Timeline events are still visible below. Price changes will show as "N/A" without API data.</p>
+            <p style="color: #ef4444; margin-bottom: 12px;">⚠️ Unable to load price chart</p>
+            <p style="color: #9ca3af; font-size: 0.9rem;">All CORS proxy services failed to load data.</p>
+            <p style="color: #9ca3af; margin-top: 8px; font-size: 0.85rem;">Check browser console for details.</p>
+            <button onclick="location.reload()" style="margin-top: 16px; padding: 8px 16px; background: var(--primary-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">Retry</button>
+            <p style="color: #60a5fa; margin-top: 12px; font-size: 0.9rem;">Timeline events are still visible below ↓</p>
         `;
 
         // Timeline already rendered, but mark that data is unavailable
