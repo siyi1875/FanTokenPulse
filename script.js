@@ -24,16 +24,17 @@ const keyEvents = [
         description: 'Binance, Paribu, Upbit listed $PSG',
         type: 'exchange',
         category: 'token',
+        filterCategory: 'crypto',
         color: 'rgba(34, 197, 94, 0.3)',
         priceChange: '+198%'
     },
-
     {
         date: '2021-04-13',
         label: '⚽ UCL Semi-Final 1st Leg',
         description: 'Lost 1-2 to Man City',
         type: 'match-loss',
         category: 'ucl',
+        filterCategory: 'games',
         color: 'rgba(239, 68, 68, 0.3)'
     },
     {
@@ -42,6 +43,7 @@ const keyEvents = [
         description: 'Token reached $58.79',
         type: 'milestone',
         category: 'token',
+        filterCategory: 'crypto',
         color: 'rgba(234, 179, 8, 0.3)'
     },
     {
@@ -50,6 +52,7 @@ const keyEvents = [
         description: 'Lost 0-2 to Man City (eliminated)',
         type: 'match-loss',
         category: 'ucl',
+        filterCategory: 'games',
         color: 'rgba(239, 68, 68, 0.3)'
     },
     {
@@ -58,6 +61,7 @@ const keyEvents = [
         description: 'Lille wins - PSG finishes 2nd',
         type: 'trophy-loss',
         category: 'ligue1',
+        filterCategory: 'games',
         color: 'rgba(239, 68, 68, 0.3)'
     },
     {
@@ -66,6 +70,7 @@ const keyEvents = [
         description: 'Reports emerge Messi leaving Barcelona, PSG frontrunner',
         type: 'rumor',
         category: 'transfer',
+        filterCategory: 'transfers',
         color: 'rgba(168, 85, 247, 0.3)'
     },
     {
@@ -74,15 +79,16 @@ const keyEvents = [
         description: 'Historic signing from Barcelona + Ramos, Hakimi, Donnarumma',
         type: 'signing',
         category: 'transfer',
+        filterCategory: 'transfers',
         color: 'rgba(59, 130, 246, 0.3)'
     },
-
     {
         date: '2022-03-09',
         label: '⚽ UCL R16 Elimination',
         description: 'Lost to Real Madrid on aggregate',
         type: 'match-loss',
         category: 'ucl',
+        filterCategory: 'games',
         color: 'rgba(239, 68, 68, 0.3)'
     },
     {
@@ -91,6 +97,7 @@ const keyEvents = [
         description: '10th Ligue 1 title',
         type: 'trophy',
         category: 'ligue1',
+        filterCategory: 'games',
         color: 'rgba(234, 179, 8, 0.3)'
     },
     {
@@ -99,6 +106,7 @@ const keyEvents = [
         description: 'Lost 0-2 to Bayern Munich (aggregate)',
         type: 'match-loss',
         category: 'ucl',
+        filterCategory: 'games',
         color: 'rgba(239, 68, 68, 0.3)'
     },
     {
@@ -107,6 +115,7 @@ const keyEvents = [
         description: '11th title - Unbeaten from start',
         type: 'trophy',
         category: 'ligue1',
+        filterCategory: 'games',
         color: 'rgba(234, 179, 8, 0.3)'
     },
     {
@@ -115,6 +124,7 @@ const keyEvents = [
         description: 'Leaves for Inter Miami MLS',
         type: 'departure',
         category: 'transfer',
+        filterCategory: 'transfers',
         color: 'rgba(239, 68, 68, 0.3)'
     },
     {
@@ -123,6 +133,7 @@ const keyEvents = [
         description: 'Transfer to Saudi Pro League',
         type: 'departure',
         category: 'transfer',
+        filterCategory: 'transfers',
         color: 'rgba(239, 68, 68, 0.3)'
     },
     {
@@ -131,6 +142,7 @@ const keyEvents = [
         description: 'Beat Barcelona 6-4 aggregate',
         type: 'match-win',
         category: 'ucl',
+        filterCategory: 'games',
         color: 'rgba(34, 197, 94, 0.3)'
     },
     {
@@ -139,6 +151,7 @@ const keyEvents = [
         description: 'Lost 0-2 to Dortmund aggregate',
         type: 'match-loss',
         category: 'ucl',
+        filterCategory: 'games',
         color: 'rgba(239, 68, 68, 0.3)'
     },
     {
@@ -147,6 +160,7 @@ const keyEvents = [
         description: 'Confirms Real Madrid move',
         type: 'departure',
         category: 'transfer',
+        filterCategory: 'transfers',
         color: 'rgba(239, 68, 68, 0.3)'
     },
     {
@@ -155,6 +169,7 @@ const keyEvents = [
         description: '12th title - Unbeaten away',
         type: 'trophy',
         category: 'ligue1',
+        filterCategory: 'games',
         color: 'rgba(234, 179, 8, 0.3)'
     },
     {
@@ -163,6 +178,7 @@ const keyEvents = [
         description: 'Signs 5-year contract',
         type: 'departure',
         category: 'transfer',
+        filterCategory: 'transfers',
         color: 'rgba(239, 68, 68, 0.3)'
     },
     {
@@ -171,6 +187,7 @@ const keyEvents = [
         description: 'Neves €70M, Doué €50M, Pacho €40M',
         type: 'signing',
         category: 'transfer',
+        filterCategory: 'transfers',
         color: 'rgba(59, 130, 246, 0.3)'
     },
     {
@@ -179,6 +196,7 @@ const keyEvents = [
         description: 'Won 10-0 aggregate (7-0 2nd leg)',
         type: 'match-win',
         category: 'ucl',
+        filterCategory: 'games',
         color: 'rgba(34, 197, 94, 0.3)'
     },
     {
@@ -187,6 +205,7 @@ const keyEvents = [
         description: 'Won on penalties (1-1 aggregate)',
         type: 'match-win',
         category: 'ucl',
+        filterCategory: 'games',
         color: 'rgba(34, 197, 94, 0.3)'
     },
     {
@@ -195,6 +214,7 @@ const keyEvents = [
         description: 'Advanced to semi-finals',
         type: 'match-win',
         category: 'ucl',
+        filterCategory: 'games',
         color: 'rgba(34, 197, 94, 0.3)'
     },
     {
@@ -203,6 +223,7 @@ const keyEvents = [
         description: '13th title - 28-game unbeaten',
         type: 'trophy',
         category: 'ligue1',
+        filterCategory: 'games',
         color: 'rgba(234, 179, 8, 0.3)'
     },
     {
@@ -211,6 +232,7 @@ const keyEvents = [
         description: 'Won both legs (1-0, 2-1)',
         type: 'match-win',
         category: 'ucl',
+        filterCategory: 'games',
         color: 'rgba(34, 197, 94, 0.3)'
     },
     {
@@ -219,6 +241,7 @@ const keyEvents = [
         description: 'Won 5-0 vs Inter Milan - First European Cup!',
         type: 'trophy',
         category: 'ucl',
+        filterCategory: 'games',
         color: 'rgba(234, 179, 8, 0.3)'
     }
 ];
@@ -226,6 +249,7 @@ const keyEvents = [
 let priceChart = null;
 let allPriceData = [];
 let currentDays = 'max';
+let activeFilters = ['crypto', 'games', 'transfers']; // Default: all filters active
 
 // Initialize dashboard
 document.addEventListener('DOMContentLoaded', async () => {
@@ -408,6 +432,11 @@ async function fetchWithProxy(url) {
     throw new Error('All proxies failed');
 }
 
+// Get events filtered by active filter categories
+function getFilteredEvents() {
+    return keyEvents.filter(event => activeFilters.includes(event.filterCategory));
+}
+
 // Calculate price changes for each event
 function calculateEventPriceChanges() {
     keyEvents.forEach(event => {
@@ -444,55 +473,62 @@ function calculateEventPriceChanges() {
     });
 }
 
-// Create Chart.js price chart with event annotations
+// Create Chart.js price chart with event markers as dots
 function createPriceChart() {
     const ctx = document.getElementById('priceChart').getContext('2d');
 
-    // Create event annotations
-    const annotations = {};
-    keyEvents.forEach((event, index) => {
+    // Get filtered events based on active filters
+    const filteredEvents = getFilteredEvents();
+
+    // Create event markers dataset - dots on the price line
+    const eventMarkers = [];
+    filteredEvents.forEach(event => {
         const eventDate = new Date(event.date);
-        // Only show events that fall within our data range
-        if (eventDate >= allPriceData[0].x && eventDate <= allPriceData[allPriceData.length - 1].x) {
-            annotations[`event${index}`] = {
-                type: 'line',
-                xMin: eventDate,
-                xMax: eventDate,
-                borderColor: event.color.replace('0.3', '0.8'),
-                borderWidth: 2,
-                borderDash: [5, 5],
-                label: {
-                    content: event.priceChange ? `${event.label} (${event.priceChange})` : event.label,
-                    enabled: true,
-                    position: 'top',
-                    backgroundColor: event.color,
-                    color: '#1f2937',
-                    font: {
-                        size: 9,
-                        weight: 'bold'
-                    },
-                    padding: 3,
-                    rotation: 0
-                }
-            };
+        // Find the price point for this event
+        const dataPoint = allPriceData.find(point => {
+            const diff = Math.abs(point.x.getTime() - eventDate.getTime());
+            return diff < 86400000; // Within 24 hours
+        });
+
+        if (dataPoint) {
+            eventMarkers.push({
+                x: eventDate,
+                y: dataPoint.y,
+                event: event
+            });
         }
     });
 
     const config = {
         type: 'line',
         data: {
-            datasets: [{
-                label: 'PSG Token Price (USD)',
-                data: allPriceData,
-                borderColor: 'rgb(59, 130, 246)',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.1,
-                pointRadius: 0,
-                pointHoverRadius: 5,
-                pointHitRadius: 10
-            }]
+            datasets: [
+                {
+                    label: 'PSG Token Price (USD)',
+                    data: allPriceData,
+                    borderColor: 'rgb(59, 130, 246)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    pointHitRadius: 10,
+                    order: 2
+                },
+                {
+                    label: 'Key Events',
+                    data: eventMarkers,
+                    type: 'scatter',
+                    backgroundColor: eventMarkers.map(m => m.event.color.replace('0.3', '0.9')),
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    pointRadius: 8,
+                    pointHoverRadius: 12,
+                    pointHitRadius: 15,
+                    order: 1
+                }
+            ]
         },
         options: {
             responsive: true,
@@ -519,7 +555,7 @@ function createPriceChart() {
                     borderColor: '#374151',
                     borderWidth: 1,
                     padding: 16,
-                    displayColors: false,
+                    displayColors: true,
                     callbacks: {
                         title: (context) => {
                             return new Date(context[0].parsed.x).toLocaleDateString('en-US', {
@@ -529,38 +565,26 @@ function createPriceChart() {
                             });
                         },
                         label: (context) => {
-                            return `Price: $${context.parsed.y.toFixed(4)}`;
-                        },
-                        afterBody: (context) => {
-                            // Check if there's an event near this date
-                            const hoveredDate = new Date(context[0].parsed.x);
-                            const hoveredTimestamp = hoveredDate.getTime();
+                            const datasetIndex = context.datasetIndex;
 
-                            // Find events within 24 hours of hovered date
-                            const nearbyEvents = keyEvents.filter(event => {
-                                const eventDate = new Date(event.date);
-                                const diff = Math.abs(eventDate.getTime() - hoveredTimestamp);
-                                return diff < 86400000; // Within 24 hours
-                            });
-
-                            if (nearbyEvents.length > 0) {
-                                const lines = ['\n━━━━━━━━━━━━━━━━━━━━━━━'];
-                                nearbyEvents.forEach(event => {
-                                    lines.push('\n🎯 KEY EVENT:');
-                                    lines.push(event.label);
-                                    lines.push('\n' + event.description);
-                                    if (event.priceChange) {
-                                        lines.push('\nPrice Change: ' + event.priceChange);
-                                    }
-                                });
-                                return lines;
+                            // If it's the event markers dataset
+                            if (datasetIndex === 1) {
+                                const eventData = context.raw;
+                                if (eventData && eventData.event) {
+                                    const event = eventData.event;
+                                    return [
+                                        `🎯 ${event.label}`,
+                                        event.description,
+                                        `Price: $${context.parsed.y.toFixed(4)}`,
+                                        event.priceChange ? `Change: ${event.priceChange}` : ''
+                                    ].filter(line => line !== '');
+                                }
                             }
-                            return [];
+
+                            // Regular price line
+                            return `Price: $${context.parsed.y.toFixed(4)}`;
                         }
                     }
-                },
-                annotation: {
-                    annotations: annotations
                 },
                 zoom: {
                     zoom: {
@@ -596,11 +620,12 @@ function createPriceChart() {
                         }
                     },
                     grid: {
-                        color: '#374151',
-                        drawBorder: false
+                        display: false,
+                        drawBorder: true,
+                        borderColor: '#e5e7eb'
                     },
                     ticks: {
-                        color: '#9ca3af',
+                        color: '#64748b',
                         maxRotation: 45,
                         minRotation: 45
                     }
@@ -608,11 +633,12 @@ function createPriceChart() {
                 y: {
                     beginAtZero: false,
                     grid: {
-                        color: '#374151',
-                        drawBorder: false
+                        display: false,
+                        drawBorder: true,
+                        borderColor: '#e5e7eb'
                     },
                     ticks: {
-                        color: '#9ca3af',
+                        color: '#64748b',
                         callback: (value) => '$' + value.toFixed(2)
                     }
                 }
@@ -627,7 +653,7 @@ function createPriceChart() {
     priceChart = new Chart(ctx, config);
 }
 
-// Setup event listeners for time range buttons and reset zoom
+// Setup event listeners for time range buttons, reset zoom, and event filters
 function setupEventListeners() {
     const timeButtons = document.querySelectorAll('.time-btn');
     timeButtons.forEach(button => {
@@ -647,26 +673,50 @@ function setupEventListeners() {
             priceChart.resetZoom();
         });
     }
+
+    // Event filter buttons
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const filter = button.getAttribute('data-filter');
+
+            // Toggle filter in activeFilters array
+            if (activeFilters.includes(filter)) {
+                activeFilters = activeFilters.filter(f => f !== filter);
+                button.classList.remove('active');
+            } else {
+                activeFilters.push(filter);
+                button.classList.add('active');
+            }
+
+            // Refresh chart and timeline
+            createPriceChart();
+            renderTimeline(currentDays);
+        });
+    });
 }
 
-// Filter data based on selected time range
+// Filter data based on selected time range and zoom chart
 function filterDataByTimeRange(days) {
     currentDays = days;
 
     if (days === 'max') {
-        priceChart.data.datasets[0].data = allPriceData;
-        priceChart.resetZoom(); // Reset zoom when changing time range
+        // Reset to show all data
+        priceChart.resetZoom();
     } else {
+        // Calculate the date range
         const daysNum = parseInt(days);
+        const now = new Date();
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - daysNum);
 
-        const filteredData = allPriceData.filter(point => point.x >= cutoffDate);
-        priceChart.data.datasets[0].data = filteredData;
-        priceChart.resetZoom(); // Reset zoom when changing time range
+        // Zoom to the specific date range
+        priceChart.zoomScale('x', {
+            min: cutoffDate.getTime(),
+            max: now.getTime()
+        });
     }
 
-    // Update chart and re-render annotations for the new time range
     priceChart.update();
 
     // Re-render timeline with filtered events
@@ -702,10 +752,10 @@ function updateLastUpdatedTime() {
 function renderTimeline(days = 'max') {
     const container = document.getElementById('timelineContainer');
 
-    // Sort events chronologically
-    let sortedEvents = [...keyEvents].sort((a, b) => new Date(a.date) - new Date(b.date));
+    // Get filtered events based on active category filters
+    let sortedEvents = getFilteredEvents().sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    // Filter events based on time range if not 'max'
+    // Further filter events based on time range if not 'max'
     if (days !== 'max') {
         const daysNum = parseInt(days);
         const cutoffDate = new Date();
@@ -720,7 +770,7 @@ function renderTimeline(days = 'max') {
     let timelineHTML = '';
 
     if (sortedEvents.length === 0) {
-        timelineHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No events in this time range.</p>';
+        timelineHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No events match the selected filters.</p>';
     } else {
         sortedEvents.forEach(event => {
         const eventDate = new Date(event.date);

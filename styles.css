@@ -291,6 +291,15 @@ header {
     box-shadow: var(--shadow-sm);
 }
 
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
 .events-timeline h2 {
     font-size: 1.5rem;
     font-weight: 700;
@@ -301,7 +310,41 @@ header {
 .timeline-note {
     color: var(--text-secondary);
     font-size: 0.875rem;
-    margin-bottom: 24px;
+    margin-bottom: 0;
+}
+
+.event-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 2px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.filter-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--psg-blue);
+}
+
+.filter-btn.active {
+    background: var(--psg-blue);
+    border-color: var(--psg-blue);
+    color: white;
+}
+
+.filter-btn:active {
+    transform: scale(0.98);
 }
 
 .loading-timeline {
@@ -539,6 +582,21 @@ footer {
 
     .event-date {
         min-width: auto;
+    }
+
+    .timeline-header {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .event-filters {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .filter-btn {
+        flex: 1;
+        min-width: fit-content;
     }
 }
 
