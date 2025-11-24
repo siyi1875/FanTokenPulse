@@ -535,7 +535,8 @@ function createPriceChart() {
             maintainAspectRatio: false,
             interaction: {
                 intersect: false,
-                mode: 'index'
+                mode: 'nearest',
+                axis: 'xy'
             },
             plugins: {
                 legend: {
