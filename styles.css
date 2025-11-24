@@ -346,6 +346,11 @@ header h1 {
     color: var(--danger);
 }
 
+.price-badge.neutral {
+    background: var(--border-color);
+    color: var(--text-secondary);
+}
+
 /* Data Sources */
 .data-sources {
     background: var(--bg-card);

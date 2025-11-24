@@ -4,11 +4,8 @@
 const COINGECKO_API = 'https://api.coingecko.com/api/v3';
 const PSG_TOKEN_ID = 'paris-saint-germain-fan-token';
 
-// Alternative API endpoints as fallback
-const FALLBACK_APIS = [
-    'https://api.coingecko.com/api/v3',
-    'https://pro-api.coingecko.com/api/v3'
-];
+// CORS proxy to bypass browser CORS restrictions
+const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
 // Key events data structure with match results and token milestones
 // Token launched in November 2020, so only events from Nov 2020 onwards
@@ -217,23 +214,36 @@ let currentDays = 'max';
 
 // Initialize dashboard
 document.addEventListener('DOMContentLoaded', async () => {
+    // Render timeline immediately with events (price changes will update later)
+    renderTimeline();
+
+    // Load data asynchronously
     await loadCurrentStats();
-    await loadHistoricalData(); // This calculates price changes
+    await loadHistoricalData(); // This calculates price changes and updates timeline
     setupEventListeners();
     updateLastUpdatedTime();
-    // renderTimeline() is called at the end of loadHistoricalData() after price changes are calculated
 });
 
 // Fetch current token statistics
 async function loadCurrentStats() {
     try {
-        const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}?localization=false&tickers=false&community_data=false&developer_data=false`;
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            }
-        });
+        // Try direct API first
+        let url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}?localization=false&tickers=false&community_data=false&developer_data=false`;
+        let response;
+
+        try {
+            response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+        } catch (corsError) {
+            // If CORS error, use proxy
+            console.log('CORS blocked, using proxy...');
+            url = `${CORS_PROXY}${encodeURIComponent(url)}`;
+            response = await fetch(url);
+        }
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -255,8 +265,8 @@ async function loadCurrentStats() {
         }
     } catch (error) {
         console.error('Error fetching current stats:', error);
-        document.getElementById('currentPrice').textContent = 'API Rate Limited';
-        document.getElementById('priceChange').textContent = 'Try later';
+        document.getElementById('currentPrice').textContent = 'API Unavailable';
+        document.getElementById('priceChange').textContent = 'N/A';
         document.getElementById('marketCap').textContent = 'N/A';
         document.getElementById('volume24h').textContent = 'N/A';
     }
@@ -265,15 +275,23 @@ async function loadCurrentStats() {
 // Fetch historical price data
 async function loadHistoricalData() {
     try {
-        const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}/market_chart?vs_currency=usd&days=max&interval=daily`;
+        let url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}/market_chart?vs_currency=usd&days=max&interval=daily`;
         console.log('Fetching historical data from:', url);
 
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            }
-        });
+        let response;
+        try {
+            response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+        } catch (corsError) {
+            // If CORS error, use proxy
+            console.log('CORS blocked, using proxy for historical data...');
+            url = `${CORS_PROXY}${encodeURIComponent(url)}`;
+            response = await fetch(url);
+        }
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -298,7 +316,7 @@ async function loadHistoricalData() {
             calculateEventPriceChanges();
 
             createPriceChart();
-            renderTimeline(); // Render timeline after price changes calculated
+            renderTimeline(); // Re-render timeline with price changes
             document.getElementById('loadingIndicator').style.display = 'none';
         } else {
             throw new Error('No price data available');
@@ -306,15 +324,18 @@ async function loadHistoricalData() {
     } catch (error) {
         console.error('Error fetching historical data:', error);
         document.getElementById('loadingIndicator').innerHTML = `
-            <p style="color: #ef4444; margin-bottom: 12px;">⚠️ Unable to load price data from CoinGecko API</p>
-            <p style="color: #9ca3af; font-size: 0.9rem;">This may be due to:</p>
+            <p style="color: #ef4444; margin-bottom: 12px;">⚠️ Unable to load price chart from CoinGecko API</p>
+            <p style="color: #9ca3af; font-size: 0.9rem;">Possible causes:</p>
             <ul style="color: #9ca3af; font-size: 0.85rem; margin-top: 8px; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto;">
-                <li>Rate limiting (30 calls/min on free tier)</li>
-                <li>Browser extensions blocking requests</li>
+                <li>CORS restrictions (browser security)</li>
+                <li>API rate limiting (30 calls/min free tier)</li>
                 <li>Network connectivity issues</li>
             </ul>
-            <p style="color: #60a5fa; margin-top: 12px; font-size: 0.9rem;">Please refresh the page to try again</p>
+            <p style="color: #9ca3af; margin-top: 12px; font-size: 0.9rem;">Timeline events are still visible below. Price changes will show as "N/A" without API data.</p>
         `;
+
+        // Timeline already rendered, but mark that data is unavailable
+        console.log('Chart data unavailable, but timeline is still visible');
     }
 }
 
@@ -580,7 +601,8 @@ function renderTimeline() {
             const badgeClass = isPositive ? 'positive' : 'negative';
             priceBadgeHTML = `<span class="price-badge ${badgeClass}">${event.priceChange}</span>`;
         } else {
-            priceBadgeHTML = '<span class="price-badge">Calculating...</span>';
+            // Show N/A if data not loaded yet
+            priceBadgeHTML = '<span class="price-badge neutral">Price: N/A</span>';
         }
 
         timelineHTML += `
