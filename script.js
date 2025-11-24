@@ -1,14 +1,15 @@
 // PSG Fan Token Dashboard Script
-// Data source: CoinGecko API
+// Data source: Binance API (primary) with CoinGecko fallback
 
+const BINANCE_API = 'https://api.binance.com/api/v3';
+const PSG_PAIR = 'PSGUSDT';
 const COINGECKO_API = 'https://api.coingecko.com/api/v3';
 const PSG_TOKEN_ID = 'paris-saint-germain-fan-token';
 
-// Multiple CORS proxies as fallbacks
+// CORS proxies as last resort for CoinGecko
 const CORS_PROXIES = [
     'https://corsproxy.io/?',
-    'https://api.allorigins.win/raw?url=',
-    'https://cors-anywhere.herokuapp.com/'
+    'https://api.allorigins.win/raw?url='
 ];
 
 // Key events data structure with match results and token milestones
@@ -228,9 +229,156 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateLastUpdatedTime();
 });
 
-// Fetch with multiple proxy fallbacks
+// Fetch current token statistics from Binance
+async function loadCurrentStats() {
+    try {
+        console.log('Fetching current stats from Binance...');
+        const url = `${BINANCE_API}/ticker/24hr?symbol=${PSG_PAIR}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Binance API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Binance data received:', data);
+
+        const currentPrice = parseFloat(data.lastPrice);
+        const priceChange24h = parseFloat(data.priceChangePercent);
+        const volume24h = parseFloat(data.quoteVolume); // Volume in USDT
+
+        document.getElementById('currentPrice').textContent = `$${currentPrice.toFixed(4)}`;
+        document.getElementById('priceChange').textContent = `${priceChange24h >= 0 ? '+' : ''}${priceChange24h.toFixed(2)}%`;
+        document.getElementById('priceChange').className = `stat-change ${priceChange24h >= 0 ? 'positive' : 'negative'}`;
+        document.getElementById('marketCap').textContent = 'N/A'; // Binance doesn't provide market cap
+        document.getElementById('volume24h').textContent = `$${formatLargeNumber(volume24h)}`;
+    } catch (error) {
+        console.error('❌ Error fetching from Binance:', error);
+        console.log('Trying CoinGecko as fallback...');
+
+        // Fallback to CoinGecko
+        try {
+            const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}?localization=false&tickers=false&community_data=false&developer_data=false`;
+            const data = await fetchWithProxy(url);
+
+            if (data.market_data) {
+                const currentPrice = data.market_data.current_price.usd;
+                const priceChange24h = data.market_data.price_change_percentage_24h;
+                const marketCap = data.market_data.market_cap.usd;
+                const volume24h = data.market_data.total_volume.usd;
+
+                document.getElementById('currentPrice').textContent = `$${currentPrice.toFixed(4)}`;
+                document.getElementById('priceChange').textContent = `${priceChange24h >= 0 ? '+' : ''}${priceChange24h.toFixed(2)}%`;
+                document.getElementById('priceChange').className = `stat-change ${priceChange24h >= 0 ? 'positive' : 'negative'}`;
+                document.getElementById('marketCap').textContent = `$${formatLargeNumber(marketCap)}`;
+                document.getElementById('volume24h').textContent = `$${formatLargeNumber(volume24h)}`;
+                console.log('✅ Loaded from CoinGecko fallback');
+            }
+        } catch (fallbackError) {
+            console.error('❌ Both APIs failed:', fallbackError);
+            document.getElementById('currentPrice').textContent = 'API Unavailable';
+            document.getElementById('priceChange').textContent = 'N/A';
+            document.getElementById('marketCap').textContent = 'N/A';
+            document.getElementById('volume24h').textContent = 'N/A';
+        }
+    }
+}
+
+// Fetch historical price data from Binance
+async function loadHistoricalData() {
+    try {
+        console.log('Fetching historical data from Binance...');
+
+        // Binance limits to 1000 candles per request, so we need multiple requests
+        // Token launched Nov 2020, we need data from then to now
+        const startDate = new Date('2020-11-01');
+        const now = new Date();
+        const daysDiff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+
+        console.log(`Need ${daysDiff} days of data`);
+
+        let allData = [];
+        const limit = 1000; // Max per request
+        const requests = Math.ceil(daysDiff / limit);
+
+        // Fetch data in chunks
+        for (let i = 0; i < requests; i++) {
+            const endTime = now.getTime() - (i * limit * 24 * 60 * 60 * 1000);
+            const url = `${BINANCE_API}/klines?symbol=${PSG_PAIR}&interval=1d&limit=${limit}&endTime=${endTime}`;
+
+            console.log(`Fetching chunk ${i + 1}/${requests}...`);
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`Binance API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            allData = [...data, ...allData]; // Prepend older data
+        }
+
+        console.log(`✅ Loaded ${allData.length} candles from Binance`);
+
+        // Convert Binance format to our format
+        // Binance returns: [openTime, open, high, low, close, volume, closeTime, ...]
+        const launchDate = new Date('2020-11-01').getTime();
+        allPriceData = allData
+            .filter(candle => candle[0] >= launchDate)
+            .map(candle => ({
+                x: new Date(candle[0]), // Open time
+                y: parseFloat(candle[4])  // Close price
+            }));
+
+        console.log(`✅ Processed ${allPriceData.length} price data points`);
+
+        // Calculate price changes for events
+        calculateEventPriceChanges();
+
+        createPriceChart();
+        renderTimeline(); // Re-render timeline with price changes
+        document.getElementById('loadingIndicator').style.display = 'none';
+
+    } catch (error) {
+        console.error('❌ Binance failed, trying CoinGecko...', error);
+
+        // Fallback to CoinGecko with proxy
+        try {
+            const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}/market_chart?vs_currency=usd&days=max&interval=daily`;
+            const data = await fetchWithProxy(url);
+
+            if (data.prices && data.prices.length > 0) {
+                const launchDate = new Date('2020-11-01').getTime();
+                allPriceData = data.prices
+                    .filter(([timestamp]) => timestamp >= launchDate)
+                    .map(([timestamp, price]) => ({
+                        x: new Date(timestamp),
+                        y: price
+                    }));
+
+                console.log(`✅ Loaded ${allPriceData.length} points from CoinGecko`);
+
+                calculateEventPriceChanges();
+                createPriceChart();
+                renderTimeline();
+                document.getElementById('loadingIndicator').style.display = 'none';
+            } else {
+                throw new Error('No price data available');
+            }
+        } catch (fallbackError) {
+            console.error('❌ All data sources failed:', fallbackError);
+            document.getElementById('loadingIndicator').innerHTML = `
+                <p style="color: #ef4444; margin-bottom: 12px;">⚠️ Unable to load price chart</p>
+                <p style="color: #9ca3af; font-size: 0.9rem;">Both Binance and CoinGecko APIs failed.</p>
+                <p style="color: #9ca3af; margin-top: 8px; font-size: 0.85rem;">Check browser console for details.</p>
+                <button onclick="location.reload()" style="margin-top: 16px; padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">Retry</button>
+                <p style="color: #60a5fa; margin-top: 12px; font-size: 0.9rem;">Timeline events are still visible below ↓</p>
+            `;
+        }
+    }
+}
+
+// Fetch with CORS proxy fallback (for CoinGecko)
 async function fetchWithProxy(url) {
-    // Try first CORS proxy
     for (let proxy of CORS_PROXIES) {
         try {
             console.log(`Trying proxy: ${proxy}`);
@@ -242,85 +390,10 @@ async function fetchWithProxy(url) {
             }
         } catch (error) {
             console.log(`Proxy ${proxy} failed:`, error);
-            continue; // Try next proxy
+            continue;
         }
     }
-
     throw new Error('All proxies failed');
-}
-
-// Fetch current token statistics
-async function loadCurrentStats() {
-    try {
-        const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}?localization=false&tickers=false&community_data=false&developer_data=false`;
-        console.log('Fetching current stats...');
-
-        const data = await fetchWithProxy(url);
-
-        if (data.market_data) {
-            const currentPrice = data.market_data.current_price.usd;
-            const priceChange24h = data.market_data.price_change_percentage_24h;
-            const marketCap = data.market_data.market_cap.usd;
-            const volume24h = data.market_data.total_volume.usd;
-
-            document.getElementById('currentPrice').textContent = `$${currentPrice.toFixed(4)}`;
-            document.getElementById('priceChange').textContent = `${priceChange24h >= 0 ? '+' : ''}${priceChange24h.toFixed(2)}%`;
-            document.getElementById('priceChange').className = `stat-change ${priceChange24h >= 0 ? 'positive' : 'negative'}`;
-            document.getElementById('marketCap').textContent = `$${formatLargeNumber(marketCap)}`;
-            document.getElementById('volume24h').textContent = `$${formatLargeNumber(volume24h)}`;
-        }
-    } catch (error) {
-        console.error('Error fetching current stats:', error);
-        document.getElementById('currentPrice').textContent = 'API Unavailable';
-        document.getElementById('priceChange').textContent = 'N/A';
-        document.getElementById('marketCap').textContent = 'N/A';
-        document.getElementById('volume24h').textContent = 'N/A';
-    }
-}
-
-// Fetch historical price data
-async function loadHistoricalData() {
-    try {
-        const url = `${COINGECKO_API}/coins/${PSG_TOKEN_ID}/market_chart?vs_currency=usd&days=max&interval=daily`;
-        console.log('Fetching historical data...');
-
-        const data = await fetchWithProxy(url);
-        console.log('Received data:', data);
-
-        if (data.prices && data.prices.length > 0) {
-            // Filter data from Nov 2020 onwards (token launch)
-            const launchDate = new Date('2020-11-01').getTime();
-            allPriceData = data.prices
-                .filter(([timestamp]) => timestamp >= launchDate)
-                .map(([timestamp, price]) => ({
-                    x: new Date(timestamp),
-                    y: price
-                }));
-
-            console.log(`✅ Loaded ${allPriceData.length} price data points`);
-
-            // Calculate price changes for events
-            calculateEventPriceChanges();
-
-            createPriceChart();
-            renderTimeline(); // Re-render timeline with price changes
-            document.getElementById('loadingIndicator').style.display = 'none';
-        } else {
-            throw new Error('No price data available');
-        }
-    } catch (error) {
-        console.error('❌ Error fetching historical data:', error);
-        document.getElementById('loadingIndicator').innerHTML = `
-            <p style="color: #ef4444; margin-bottom: 12px;">⚠️ Unable to load price chart</p>
-            <p style="color: #9ca3af; font-size: 0.9rem;">All CORS proxy services failed to load data.</p>
-            <p style="color: #9ca3af; margin-top: 8px; font-size: 0.85rem;">Check browser console for details.</p>
-            <button onclick="location.reload()" style="margin-top: 16px; padding: 8px 16px; background: var(--primary-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">Retry</button>
-            <p style="color: #60a5fa; margin-top: 12px; font-size: 0.9rem;">Timeline events are still visible below ↓</p>
-        `;
-
-        // Timeline already rendered, but mark that data is unavailable
-        console.log('Chart data unavailable, but timeline is still visible');
-    }
 }
 
 // Calculate price changes for each event
