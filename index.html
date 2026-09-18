@@ -93,12 +93,81 @@
                 </div>
             </div>
 
+            <!-- Fan Token Intel: measured match impact -->
+            <div class="fti-section" id="ftiMatchImpact">
+                <div class="fti-header">
+                    <div>
+                        <h2>📊 Measured Match Impact <span class="fti-badge">Fan Token Intel</span></h2>
+                        <p class="fti-note">Real, measured $PSG price reactions to recent fixtures — not estimates.
+                            <strong>During</strong> = kickoff → full-time · <strong>Postgame</strong> = full-time → +24h · <strong>24h</strong> = −24h → +24h window.</p>
+                    </div>
+                </div>
+                <div class="fti-summary" id="ftiSummary"></div>
+                <div class="fti-controls">
+                    <div class="fti-chip-group" id="ftiResultFilter">
+                        <button class="fti-chip active" data-result="all">All</button>
+                        <button class="fti-chip" data-result="win">Wins</button>
+                        <button class="fti-chip" data-result="draw">Draws</button>
+                        <button class="fti-chip" data-result="loss">Losses</button>
+                    </div>
+                    <span class="fti-hint" id="ftiMatchHint"></span>
+                </div>
+                <div class="fti-table-wrap">
+                    <table class="fti-table" id="ftiMatchTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Match</th>
+                                <th class="hide-sm">Competition</th>
+                                <th>Result</th>
+                                <th class="num">During</th>
+                                <th class="num hide-sm">Postgame</th>
+                                <th class="num">24h</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ftiMatchBody">
+                            <tr><td colspan="7" class="fti-empty">Loading measured match impact…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Fan Token Intel: capital rotation across the Chiliz fan-token universe -->
+            <div class="fti-section" id="ftiRotation">
+                <div class="fti-header">
+                    <div>
+                        <h2>🔄 Fan Token Capital Rotation <span class="fti-badge">Fan Token Intel</span></h2>
+                        <p class="fti-note">Where volume is flowing across the ~65 Chiliz fan tokens over the last 24h.
+                            <strong>Relative</strong> change strips out the market-wide move (token change − universe median).</p>
+                    </div>
+                </div>
+                <div class="fti-rotation-stats" id="ftiRotationStats"></div>
+                <div class="fti-table-wrap">
+                    <table class="fti-table" id="ftiRotationTable">
+                        <thead>
+                            <tr>
+                                <th>Token</th>
+                                <th class="num">Price</th>
+                                <th class="num hide-sm">24h Vol Δ</th>
+                                <th class="num">Relative Δ</th>
+                                <th>Flow</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ftiRotationBody">
+                            <tr><td colspan="5" class="fti-empty">Loading capital rotation…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <div class="data-sources">
                 <h3>Data Sources</h3>
                 <ul>
                     <li><strong>Price & Market Data:</strong> <a href="https://www.coingecko.com/en/coins/paris-saint-germain-fan-token" target="_blank">CoinGecko API</a> (primary) with Binance fallback</li>
                     <li><strong>Historical Price:</strong> <a href="https://www.binance.com/en/trade/PSG_USDT" target="_blank">Binance API</a></li>
+                    <li><strong>Match Impact & Capital Rotation:</strong> <a href="https://www.fantokenintel.com" target="_blank">Fan Token Intel</a> MCP (descriptive data — not financial advice)</li>
                     <li><strong>Team Events:</strong> Transfermarkt, Goal.com, ESPN, Official PSG sources</li>
+                    <li><strong>FTI snapshot generated:</strong> <span id="ftiGeneratedAt">-</span></li>
                     <li><strong>Last Updated:</strong> <span id="lastUpdated">-</span></li>
                 </ul>
             </div>
@@ -110,5 +179,6 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="fti.js"></script>
 </body>
 </html>

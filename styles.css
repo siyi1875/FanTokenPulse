@@ -613,3 +613,249 @@ footer {
         font-size: 1.75rem;
     }
 }
+
+/* ============================================================
+   Fan Token Intel (FTI) panels
+   ============================================================ */
+.fti-section {
+    background: var(--bg-card);
+    padding: 32px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    margin-top: 24px;
+}
+
+.fti-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.fti-header h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.fti-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 999px;
+    color: #fff;
+    background: linear-gradient(90deg, var(--psg-blue), var(--psg-red));
+}
+
+.fti-note {
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    max-width: 780px;
+}
+
+/* Summary / stat tiles */
+.fti-summary,
+.fti-rotation-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.fti-tile {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fti-tile-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+.fti-tile-label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.fti-tile.pos .fti-tile-value { color: var(--success); }
+.fti-tile.neg .fti-tile-value { color: var(--danger); }
+
+/* Controls */
+.fti-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.fti-chip-group {
+    display: inline-flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.fti-chip {
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.fti-chip:hover { background: var(--bg-hover); }
+
+.fti-chip.active {
+    background: var(--psg-blue);
+    border-color: var(--psg-blue);
+    color: #fff;
+}
+
+.fti-hint {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+/* Tables */
+.fti-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.fti-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    min-width: 560px;
+}
+
+.fti-table thead th {
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    font-weight: 700;
+    padding: 12px 14px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+}
+
+.fti-table th.num,
+.fti-table td.num { text-align: right; }
+
+.fti-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.fti-table tbody tr:last-child td { border-bottom: none; }
+.fti-table tbody tr:hover { background: var(--bg-hover); }
+
+.fti-empty {
+    text-align: center !important;
+    color: var(--text-muted);
+    padding: 28px 14px !important;
+}
+
+.fti-date { color: var(--text-secondary); }
+.fti-match { font-weight: 600; white-space: normal; }
+.fti-venue { color: var(--text-muted); font-weight: 500; margin-right: 2px; }
+.fti-score {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 7px;
+    border-radius: 5px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+.fti-comp { color: var(--text-secondary); }
+.fti-token { font-weight: 700; }
+
+.fti-tag {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: rgba(139, 92, 246, 0.12);
+    color: var(--purple);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    vertical-align: middle;
+}
+
+.fti-psg-row { background: rgba(0, 65, 112, 0.05); }
+.fti-psg-row:hover { background: rgba(0, 65, 112, 0.09); }
+
+/* Percentage + result + flow badges */
+.fti-pct { font-weight: 700; font-variant-numeric: tabular-nums; }
+.fti-pct.pos { color: var(--success); }
+.fti-pct.neg { color: var(--danger); }
+.fti-pct.neutral { color: var(--text-muted); }
+
+.fti-result {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #fff;
+}
+.fti-result.win { background: var(--success); }
+.fti-result.loss { background: var(--danger); }
+.fti-result.draw { background: var(--text-muted); }
+
+.fti-flow {
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: capitalize;
+}
+.fti-flow.pos { color: var(--success); }
+.fti-flow.neg { color: var(--danger); }
+.fti-flow.neutral { color: var(--text-muted); }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fti-summary,
+    .fti-rotation-stats { grid-template-columns: repeat(2, 1fr); }
+    .fti-section { padding: 20px; }
+    .fti-table th.hide-sm,
+    .fti-table td.hide-sm { display: none; }
+    .fti-table { min-width: 0; }
+}
