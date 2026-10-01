@@ -22,3 +22,6 @@ npm-debug.log*
 # Build outputs
 dist/
 build/
+
+# Fan Token Intel cross-check output (raw API responses)
+.fti-check/

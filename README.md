@@ -143,6 +143,25 @@ Override the endpoint or token via env vars if needed:
 FTI_MCP_URL="https://mcp-production-f681.up.railway.app/mcp" FTI_TOKEN="PSG" node fetch-fti-data.js
 ```
 
+### Cross-checking against FTI's match correlation
+
+`check-fti-correlation.js` compares the dashboard's win/draw/loss numbers with
+FTI's key-gated `tokenintel_match_correlation`. It needs a free FTI API key:
+
+```bash
+# One-time: accepts FTI's terms (https://fantokenintel.com/legal). Key is saved to
+# ~/.config/fantokenintel/key (mode 600) and never printed or committed.
+node check-fti-correlation.js register --name "PSG Pulse" --email you@example.com --accept-terms
+
+# Run the comparison (uses FTI_API_KEY if set, else the saved key file)
+node check-fti-correlation.js
+```
+
+Raw responses land in `.fti-check/` (git-ignored, keys redacted). Last check
+(Oct 2026): match-level data was identical on all 54 overlapping matches. FTI's
+aggregate covers 100 matches (since Dec 2024) and measures "24h impact" from
+kick-off; the dashboard uses 12 months and the −24h → +24h window.
+
 ### Using the MCP directly (Claude Code, etc.)
 
 ```bash
