@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-18T13:43:55.474Z",
+  "generated_at": "2026-10-01T11:27:31.766Z",
   "source": "Fan Token Intel MCP (fantokenintel.com)",
   "token": "PSG",
   "note": "Descriptive market data from FTI anonymous endpoints. Not financial advice.",
   "match_impact": {
     "token": "PSG",
-    "match_count": 55,
+    "match_count": 54,
     "semantics": {
       "return_total_pct": "price_24h_before -> price_24h_after (the headline event window)",
       "return_ko_to_24h_pct": "price_kickoff -> price_24h_after (in-play + postgame only)",
@@ -13,12 +13,33 @@
       "return_postgame_pct": "price_at_fulltime -> price_24h_after"
     },
     "summary": {
-      "avg_return_during_match": -0.3909,
-      "avg_return_postgame": -0.1427,
-      "avg_return_total_24h": -0.369,
-      "positive_during_pct": 25.5
+      "avg_return_during_match": -0.349,
+      "avg_return_postgame": -0.1092,
+      "avg_return_total_24h": -0.2763,
+      "positive_during_pct": 25.9
     },
     "matches": [
+      {
+        "date": "2026-09-20T18:45:00+00:00",
+        "fixture_key": "apifb_1552773",
+        "home": "Marseille",
+        "away": "Paris Saint Germain",
+        "score": "1-2",
+        "competition": "Ligue 1",
+        "result": "win",
+        "is_home": false,
+        "is_derby": false,
+        "importance": 0.7,
+        "price_24h_before": 0.467,
+        "price_kickoff": 0.466,
+        "price_fulltime": 0.466,
+        "price_1h_after": 0.466,
+        "price_24h_after": 0.469,
+        "return_during_pct": 0,
+        "return_postgame_pct": 0.6438,
+        "return_total_pct": 0.4283,
+        "return_ko_to_24h_pct": 0.6438
+      },
       {
         "date": "2026-09-13T18:45:00+00:00",
         "fixture_key": "apifb_1552757",
@@ -1131,48 +1152,6 @@
         "return_postgame_pct": -0.6439,
         "return_total_pct": -2.4035,
         "return_ko_to_24h_pct": -1.5316
-      },
-      {
-        "date": "2025-09-27T19:05:00+00:00",
-        "fixture_key": "apifb_1387748",
-        "home": "Paris Saint Germain",
-        "away": "Auxerre",
-        "score": "2-0",
-        "competition": "Ligue 1",
-        "result": "win",
-        "is_home": true,
-        "is_derby": false,
-        "importance": 0.6,
-        "price_24h_before": 1.482,
-        "price_kickoff": 1.563,
-        "price_fulltime": 1.534,
-        "price_1h_after": 1.537,
-        "price_24h_after": 1.515,
-        "return_during_pct": -1.8554,
-        "return_postgame_pct": -1.2386,
-        "return_total_pct": 2.2267,
-        "return_ko_to_24h_pct": -3.071
-      },
-      {
-        "date": "2025-09-22T18:00:00+00:00",
-        "fixture_key": "apifb_1387739",
-        "home": "Marseille",
-        "away": "Paris Saint Germain",
-        "score": "1-0",
-        "competition": "Ligue 1",
-        "result": "loss",
-        "is_home": false,
-        "is_derby": false,
-        "importance": 0.6,
-        "price_24h_before": 1.603,
-        "price_kickoff": 1.501,
-        "price_fulltime": 1.489,
-        "price_1h_after": 1.497,
-        "price_24h_after": 1.488,
-        "return_during_pct": -0.7995,
-        "return_postgame_pct": -0.0672,
-        "return_total_pct": -7.174,
-        "return_ko_to_24h_pct": -0.8661
       }
     ],
     "disclaimer": "Descriptive data only: not financial advice, not an execution service, provided as-is. Terms: https://fantokenintel.com/legal"
@@ -1180,210 +1159,210 @@
   "capital_rotation": {
     "period_hours": 24,
     "token_count": 65,
-    "inflow_tokens": 18,
-    "outflow_tokens": 22,
+    "inflow_tokens": 8,
+    "outflow_tokens": 20,
     "returned": 20,
     "limit": 20,
     "min_volume_usd": 1000,
     "dust_hidden": 20,
-    "universe_median_change_pct": -4.72,
+    "universe_median_change_pct": 0,
     "methodology": "flow is classified on relative_change_pct = token volume change minus the universe median change, so a market-wide move (or a volume-source shift in the feed) does not read as rotation. volume_change_pct is the raw window-over-window change for reference.",
     "tokens": [
       {
-        "token": "SEVILLA",
-        "current_volume": 1135723,
-        "prior_volume": 391406.5,
-        "volume_change_pct": 190.16,
-        "price": 0.04964539,
-        "relative_change_pct": 194.88,
+        "token": "VCF",
+        "current_volume": 11693.1,
+        "prior_volume": 5182.04,
+        "volume_change_pct": 125.65,
+        "price": 0.04895794,
+        "relative_change_pct": 125.65,
         "flow": "inflow"
       },
       {
-        "token": "BJK",
-        "current_volume": 607519.26,
-        "prior_volume": 240582.46,
-        "volume_change_pct": 152.52,
-        "price": 0.26212292803459286,
-        "relative_change_pct": 157.24,
+        "token": "SAM",
+        "current_volume": 45699,
+        "prior_volume": 33913,
+        "volume_change_pct": 34.75,
+        "price": 0.109339,
+        "relative_change_pct": 34.75,
         "flow": "inflow"
       },
       {
-        "token": "SPURS",
-        "current_volume": 41968,
-        "prior_volume": 29191,
-        "volume_change_pct": 43.77,
-        "price": 0.04891,
-        "relative_change_pct": 48.49,
+        "token": "SPAIN",
+        "current_volume": 87175.5,
+        "prior_volume": 67274.5,
+        "volume_change_pct": 29.58,
+        "price": 0.119813,
+        "relative_change_pct": 29.58,
         "flow": "inflow"
       },
       {
-        "token": "PFL",
-        "current_volume": 1054.29,
-        "prior_volume": 736.09,
-        "volume_change_pct": 43.23,
-        "price": 0.069722,
-        "relative_change_pct": 47.95,
+        "token": "ASM",
+        "current_volume": 369667,
+        "prior_volume": 287874,
+        "volume_change_pct": 28.41,
+        "price": 0.076038,
+        "relative_change_pct": 28.41,
         "flow": "inflow"
       },
       {
-        "token": "BELG",
-        "current_volume": 215381,
-        "prior_volume": 158260,
-        "volume_change_pct": 36.09,
-        "price": 0.073937,
-        "relative_change_pct": 40.81,
-        "flow": "inflow"
-      },
-      {
-        "token": "AM",
-        "current_volume": 65160,
-        "prior_volume": 54876.5,
-        "volume_change_pct": 18.74,
-        "price": 0.096184,
-        "relative_change_pct": 23.46,
-        "flow": "inflow"
-      },
-      {
-        "token": "OG",
-        "current_volume": 1174148,
-        "prior_volume": 1010247,
-        "volume_change_pct": 16.22,
-        "price": 2.753,
-        "relative_change_pct": 20.94,
-        "flow": "inflow"
-      },
-      {
-        "token": "LAZIO",
-        "current_volume": 424636,
-        "prior_volume": 541391,
-        "volume_change_pct": -21.57,
-        "price": 0.37,
-        "relative_change_pct": -16.85,
+        "token": "SAFA",
+        "current_volume": 170495,
+        "prior_volume": 210008,
+        "volume_change_pct": -18.81,
+        "price": 0.067827,
+        "relative_change_pct": -18.81,
         "flow": "outflow"
       },
       {
-        "token": "ASR",
-        "current_volume": 2243587,
-        "prior_volume": 3026335.5,
-        "volume_change_pct": -25.86,
-        "price": 0.844,
-        "relative_change_pct": -21.14,
+        "token": "GAL",
+        "current_volume": 1445332,
+        "prior_volume": 1875655,
+        "volume_change_pct": -22.94,
+        "price": 0.820171,
+        "relative_change_pct": -22.94,
+        "flow": "outflow"
+      },
+      {
+        "token": "POR",
+        "current_volume": 82354,
+        "prior_volume": 107653,
+        "volume_change_pct": -23.5,
+        "price": 0.076318,
+        "relative_change_pct": -23.5,
+        "flow": "outflow"
+      },
+      {
+        "token": "OG",
+        "current_volume": 891050.5,
+        "prior_volume": 1172375.5,
+        "volume_change_pct": -24,
+        "price": 2.804,
+        "relative_change_pct": -24,
         "flow": "outflow"
       },
       {
         "token": "SAUBER",
-        "current_volume": 1090868,
-        "prior_volume": 1477136,
-        "volume_change_pct": -26.15,
-        "price": 0.113552,
-        "relative_change_pct": -21.43,
-        "flow": "outflow"
-      },
-      {
-        "token": "SAM",
-        "current_volume": 41434,
-        "prior_volume": 56977.5,
-        "volume_change_pct": -27.28,
-        "price": 0.121446,
-        "relative_change_pct": -22.56,
+        "current_volume": 357580.5,
+        "prior_volume": 474422,
+        "volume_change_pct": -24.63,
+        "price": 0.111029,
+        "relative_change_pct": -24.63,
         "flow": "outflow"
       },
       {
         "token": "ITA",
-        "current_volume": 26724,
-        "prior_volume": 39217,
-        "volume_change_pct": -31.86,
-        "price": 0.062926,
-        "relative_change_pct": -27.14,
-        "flow": "outflow"
-      },
-      {
-        "token": "BAR",
-        "current_volume": 870584,
-        "prior_volume": 1420572,
-        "volume_change_pct": -38.72,
-        "price": 0.269,
-        "relative_change_pct": -34,
-        "flow": "outflow"
-      },
-      {
-        "token": "JUV",
-        "current_volume": 499611,
-        "prior_volume": 898302,
-        "volume_change_pct": -44.38,
-        "price": 0.302,
-        "relative_change_pct": -39.66,
-        "flow": "outflow"
-      },
-      {
-        "token": "SAFA",
-        "current_volume": 169706,
-        "prior_volume": 307123.5,
-        "volume_change_pct": -44.74,
-        "price": 0.069628,
-        "relative_change_pct": -40.02,
+        "current_volume": 40058.5,
+        "prior_volume": 55090,
+        "volume_change_pct": -27.29,
+        "price": 0.061203,
+        "relative_change_pct": -27.29,
         "flow": "outflow"
       },
       {
         "token": "NAP",
-        "current_volume": 282042,
-        "prior_volume": 585454,
-        "volume_change_pct": -51.83,
-        "price": 0.207389,
-        "relative_change_pct": -47.11,
+        "current_volume": 171687.5,
+        "prior_volume": 257987,
+        "volume_change_pct": -33.45,
+        "price": 0.210942,
+        "relative_change_pct": -33.45,
         "flow": "outflow"
       },
       {
-        "token": "ACM",
-        "current_volume": 1165614,
-        "prior_volume": 3083425.5,
-        "volume_change_pct": -62.2,
-        "price": 0.273,
-        "relative_change_pct": -57.48,
+        "token": "INTER",
+        "current_volume": 99565.5,
+        "prior_volume": 154767.5,
+        "volume_change_pct": -35.67,
+        "price": 0.204536,
+        "relative_change_pct": -35.67,
         "flow": "outflow"
       },
       {
-        "token": "EFC",
-        "current_volume": 79115,
-        "prior_volume": 219943.5,
-        "volume_change_pct": -64.03,
-        "price": 0.04942601,
-        "relative_change_pct": -59.31,
+        "token": "FB",
+        "current_volume": 130567,
+        "prior_volume": 211151,
+        "volume_change_pct": -38.16,
+        "price": 0.289984,
+        "relative_change_pct": -38.16,
         "flow": "outflow"
       },
       {
-        "token": "PEPPER",
-        "current_volume": 5351.28,
-        "prior_volume": 37578,
-        "volume_change_pct": -85.76,
-        "price": 4.75127e-10,
-        "relative_change_pct": -81.04,
+        "token": "ALA",
+        "current_volume": 3535.1,
+        "prior_volume": 6060.81,
+        "volume_change_pct": -41.67,
+        "price": 0.03369101,
+        "relative_change_pct": -41.67,
         "flow": "outflow"
       },
       {
-        "token": "VCF",
-        "current_volume": 1016.82,
-        "prior_volume": 9066.34,
-        "volume_change_pct": -88.78,
-        "price": 0.04924893,
-        "relative_change_pct": -84.06,
+        "token": "AVL",
+        "current_volume": 3621.53,
+        "prior_volume": 7018.86,
+        "volume_change_pct": -48.4,
+        "price": 0.062217,
+        "relative_change_pct": -48.4,
+        "flow": "outflow"
+      },
+      {
+        "token": "SPURS",
+        "current_volume": 10105.67,
+        "prior_volume": 19639.53,
+        "volume_change_pct": -48.54,
+        "price": 0.04926,
+        "relative_change_pct": -48.54,
+        "flow": "outflow"
+      },
+      {
+        "token": "TRA",
+        "current_volume": 56242,
+        "prior_volume": 120347.5,
+        "volume_change_pct": -53.27,
+        "price": 0.191742,
+        "relative_change_pct": -53.27,
+        "flow": "outflow"
+      },
+      {
+        "token": "AM",
+        "current_volume": 12943.76,
+        "prior_volume": 35548,
+        "volume_change_pct": -63.59,
+        "price": 0.091184,
+        "relative_change_pct": -63.59,
+        "flow": "outflow"
+      },
+      {
+        "token": "BENFICA",
+        "current_volume": 8247.37,
+        "prior_volume": 33823,
+        "volume_change_pct": -75.62,
+        "price": 0.082413,
+        "relative_change_pct": -75.62,
+        "flow": "outflow"
+      },
+      {
+        "token": "SEVILLA",
+        "current_volume": 4064.72,
+        "prior_volume": 102881,
+        "volume_change_pct": -96.05,
+        "price": 0.0497739,
+        "relative_change_pct": -96.05,
         "flow": "outflow"
       }
     ],
     "benchmarks": [
       {
         "token": "BTC",
-        "current_volume": 26552532867,
-        "prior_volume": 30968565374.5,
-        "volume_change_pct": -14.26,
-        "price": 78986
+        "current_volume": 35103908384,
+        "prior_volume": 28886088811,
+        "volume_change_pct": 21.53,
+        "price": 83818
       },
       {
         "token": "ETH",
-        "current_volume": 13602237016,
-        "prior_volume": 16180236715.5,
-        "volume_change_pct": -15.93,
-        "price": 2529.51
+        "current_volume": 14118045220,
+        "prior_volume": 15646307730,
+        "volume_change_pct": -9.77,
+        "price": 2696.93
       }
     ],
     "disclaimer": "Descriptive data only: not financial advice, not an execution service, provided as-is. Terms: https://fantokenintel.com/legal"
@@ -1395,130 +1374,13 @@
     "candle_count": 180,
     "candles": [
       {
-        "time": "2026-03-22T00:00:00+00:00",
-        "open": 0.769,
-        "high": 0.794,
-        "low": 0.766,
-        "close": 0.778,
-        "volume": 276910.40359,
-        "n_ticks": 245
-      },
-      {
-        "time": "2026-03-23T00:00:00+00:00",
-        "open": 0.778,
-        "high": 0.796,
-        "low": 0.754,
-        "close": 0.787,
-        "volume": 296384.97975,
-        "n_ticks": 574
-      },
-      {
-        "time": "2026-03-24T00:00:00+00:00",
-        "open": 0.787,
-        "high": 0.793,
-        "low": 0.777,
-        "close": 0.783,
-        "volume": 128963.05728,
-        "n_ticks": 541
-      },
-      {
-        "time": "2026-03-25T00:00:00+00:00",
-        "open": 0.783,
-        "high": 0.801,
-        "low": 0.781,
-        "close": 0.789,
-        "volume": 229746.99054,
-        "n_ticks": 540
-      },
-      {
-        "time": "2026-03-26T00:00:00+00:00",
-        "open": 0.789,
-        "high": 0.794,
-        "low": 0.776,
-        "close": 0.78,
-        "volume": 199650.37022,
-        "n_ticks": 542
-      },
-      {
-        "time": "2026-03-27T00:00:00+00:00",
-        "open": 0.78,
-        "high": 0.783,
-        "low": 0.756,
-        "close": 0.768,
-        "volume": 284750.32255,
-        "n_ticks": 541
-      },
-      {
-        "time": "2026-03-28T00:00:00+00:00",
-        "open": 0.766,
-        "high": 0.789,
-        "low": 0.763,
-        "close": 0.773,
-        "volume": 359809.25817,
-        "n_ticks": 541
-      },
-      {
-        "time": "2026-03-29T00:00:00+00:00",
-        "open": 0.771,
-        "high": 0.778,
-        "low": 0.76,
-        "close": 0.765,
-        "volume": 226128.3067,
-        "n_ticks": 539
-      },
-      {
-        "time": "2026-03-30T00:00:00+00:00",
-        "open": 0.764,
-        "high": 0.793,
-        "low": 0.762,
-        "close": 0.786,
-        "volume": 292046.83033,
-        "n_ticks": 539
-      },
-      {
-        "time": "2026-03-31T00:00:00+00:00",
-        "open": 0.788,
-        "high": 0.802,
-        "low": 0.782,
-        "close": 0.796,
-        "volume": 296259.97605,
-        "n_ticks": 540
-      },
-      {
-        "time": "2026-04-01T00:00:00+00:00",
-        "open": 0.798,
-        "high": 0.811,
-        "low": 0.793,
-        "close": 0.81,
-        "volume": 186901.85404,
-        "n_ticks": 539
-      },
-      {
-        "time": "2026-04-02T00:00:00+00:00",
-        "open": 0.808,
-        "high": 0.811,
-        "low": 0.784,
-        "close": 0.794,
-        "volume": 333655.03339,
-        "n_ticks": 539
-      },
-      {
-        "time": "2026-04-03T00:00:00+00:00",
-        "open": 0.794,
-        "high": 0.824,
-        "low": 0.79,
-        "close": 0.822,
-        "volume": 256898.38852,
-        "n_ticks": 539
-      },
-      {
         "time": "2026-04-04T00:00:00+00:00",
-        "open": 0.821,
+        "open": 0.829,
         "high": 0.849,
-        "low": 0.809,
+        "low": 0.816,
         "close": 0.843,
         "volume": 391476.38761,
-        "n_ticks": 540
+        "n_ticks": 281
       },
       {
         "time": "2026-04-05T00:00:00+00:00",
@@ -3008,11 +2870,128 @@
       {
         "time": "2026-09-18T00:00:00+00:00",
         "open": 0.458,
-        "high": 0.463,
+        "high": 0.467,
         "low": 0.457,
+        "close": 0.465,
+        "volume": 278942.92126,
+        "n_ticks": 570
+      },
+      {
+        "time": "2026-09-19T00:00:00+00:00",
+        "open": 0.465,
+        "high": 0.469,
+        "low": 0.46,
         "close": 0.462,
-        "volume": 907886,
-        "n_ticks": 327
+        "volume": 1039230,
+        "n_ticks": 571
+      },
+      {
+        "time": "2026-09-20T00:00:00+00:00",
+        "open": 0.463,
+        "high": 0.469,
+        "low": 0.459,
+        "close": 0.466,
+        "volume": 995108,
+        "n_ticks": 570
+      },
+      {
+        "time": "2026-09-21T00:00:00+00:00",
+        "open": 0.466,
+        "high": 0.474,
+        "low": 0.465,
+        "close": 0.473,
+        "volume": 1254728,
+        "n_ticks": 565
+      },
+      {
+        "time": "2026-09-22T00:00:00+00:00",
+        "open": 0.473,
+        "high": 0.475,
+        "low": 0.463,
+        "close": 0.472,
+        "volume": 1274927,
+        "n_ticks": 570
+      },
+      {
+        "time": "2026-09-23T00:00:00+00:00",
+        "open": 0.472,
+        "high": 0.476,
+        "low": 0.463,
+        "close": 0.465,
+        "volume": 372131.16442,
+        "n_ticks": 571
+      },
+      {
+        "time": "2026-09-24T00:00:00+00:00",
+        "open": 0.465,
+        "high": 0.472,
+        "low": 0.463,
+        "close": 0.466,
+        "volume": 1103005,
+        "n_ticks": 569
+      },
+      {
+        "time": "2026-09-25T00:00:00+00:00",
+        "open": 0.466,
+        "high": 0.471,
+        "low": 0.463,
+        "close": 0.47,
+        "volume": 1184733,
+        "n_ticks": 571
+      },
+      {
+        "time": "2026-09-26T00:00:00+00:00",
+        "open": 0.47,
+        "high": 0.471,
+        "low": 0.466,
+        "close": 0.469,
+        "volume": 979408,
+        "n_ticks": 570
+      },
+      {
+        "time": "2026-09-27T00:00:00+00:00",
+        "open": 0.468,
+        "high": 0.492,
+        "low": 0.466,
+        "close": 0.471,
+        "volume": 2779521,
+        "n_ticks": 571
+      },
+      {
+        "time": "2026-09-28T00:00:00+00:00",
+        "open": 0.47,
+        "high": 0.472,
+        "low": 0.458,
+        "close": 0.462,
+        "volume": 1642148,
+        "n_ticks": 569
+      },
+      {
+        "time": "2026-09-29T00:00:00+00:00",
+        "open": 0.462,
+        "high": 0.465,
+        "low": 0.455,
+        "close": 0.457,
+        "volume": 277345.55623,
+        "n_ticks": 570
+      },
+      {
+        "time": "2026-09-30T00:00:00+00:00",
+        "open": 0.457,
+        "high": 0.466,
+        "low": 0.456,
+        "close": 0.463,
+        "volume": 1181455,
+        "n_ticks": 571
+      },
+      {
+        "time": "2026-10-01T00:00:00+00:00",
+        "open": 0.463,
+        "high": 0.467,
+        "low": 0.459,
+        "close": 0.46,
+        "volume": 1444399,
+        "n_ticks": 271
       }
     ],
     "ohlc_note": "high/low are the max/min of prices we sampled within each bucket (true intra-bar range at our collection cadence — see n_ticks — not exchange tick-by-tick data). A bucket with n_ticks=1 has high==low==open==close.",

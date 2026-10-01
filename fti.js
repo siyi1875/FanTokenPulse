@@ -8,10 +8,10 @@
 // gracefully: if the file is missing (e.g. script not yet run), the panels hide
 // themselves instead of showing broken UI.
 
-const FTI_DATA_URL = 'data/fti.json';
-
-let ftiMatches = [];
-let ftiResultFilter = 'all';
+// Note: the measured matches themselves are merged into the main Key Events
+// timeline + chart by script.js (mergeFtiMatchEvents). This file renders the
+// aggregate summary, the capital-rotation panel, and the price-card fallback.
+const FTI_PANEL_DATA_URL = 'data/fti.json';
 
 document.addEventListener('DOMContentLoaded', () => {
     loadFtiData();
@@ -19,14 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadFtiData() {
     try {
-        const res = await fetch(FTI_DATA_URL, { cache: 'no-cache' });
+        const res = await fetch(FTI_PANEL_DATA_URL, { cache: 'no-cache' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
         renderFtiGeneratedAt(data.generated_at);
-        renderMatchImpact(data.match_impact);
+        renderMatchSummary(data.match_impact);
         renderCapitalRotation(data.capital_rotation);
-        setupFtiControls();
 
         // The live price cards use CoinGecko/Binance directly, which are prone to
         // CORS / rate-limit failures. Use FTI's baked candles as a last-resort
@@ -107,22 +106,17 @@ function formatLargeNumberSafe(num) {
     return Number(num).toFixed(2);
 }
 
-/* ----------------------------- Match impact ----------------------------- */
+/* -------------------------- Match impact summary ------------------------ */
 
-function renderMatchImpact(mi) {
+// The per-match detail now lives in the main Key Events timeline; here we show
+// the aggregate stats that the timeline can't convey at a glance.
+function renderMatchSummary(mi) {
     if (!mi || !Array.isArray(mi.matches) || mi.matches.length === 0) {
-        document.getElementById('ftiMatchImpact').style.display = 'none';
+        const section = document.getElementById('ftiMatchImpact');
+        if (section) section.style.display = 'none';
         return;
     }
 
-    // Newest first for the table.
-    ftiMatches = [...mi.matches].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    renderMatchSummary(mi);
-    renderMatchTable();
-}
-
-function renderMatchSummary(mi) {
     const s = mi.summary || {};
     const tiles = [
         { label: 'Matches tracked', value: String(mi.match_count ?? mi.matches.length), tone: 'neutral' },
@@ -140,59 +134,6 @@ function renderMatchSummary(mi) {
         </div>`
         )
         .join('');
-}
-
-function renderMatchTable() {
-    const body = document.getElementById('ftiMatchBody');
-    const rows = ftiMatches.filter(
-        (m) => ftiResultFilter === 'all' || m.result === ftiResultFilter
-    );
-
-    document.getElementById('ftiMatchHint').textContent = `${rows.length} matches`;
-
-    if (rows.length === 0) {
-        body.innerHTML = `<tr><td colspan="7" class="fti-empty">No ${ftiResultFilter} matches in this window.</td></tr>`;
-        return;
-    }
-
-    body.innerHTML = rows
-        .map((m) => {
-            const date = new Date(m.date).toLocaleDateString('en-US', {
-                year: '2-digit',
-                month: 'short',
-                day: 'numeric',
-            });
-            const opponent = m.is_home ? m.away : m.home;
-            const venue = m.is_home ? 'vs' : '@';
-            const derby = m.is_derby ? ' <span class="fti-tag">derby</span>' : '';
-            return `
-            <tr>
-                <td class="fti-date">${date}</td>
-                <td class="fti-match">
-                    <span class="fti-venue">${venue}</span> ${escapeHtml(opponent)}
-                    <span class="fti-score">${escapeHtml(m.score || '')}</span>${derby}
-                </td>
-                <td class="hide-sm fti-comp">${escapeHtml(m.competition || '')}</td>
-                <td>${resultBadge(m.result)}</td>
-                <td class="num">${pctBadge(m.return_during_pct)}</td>
-                <td class="num hide-sm">${pctBadge(m.return_postgame_pct)}</td>
-                <td class="num">${pctBadge(m.return_total_pct)}</td>
-            </tr>`;
-        })
-        .join('');
-}
-
-function setupFtiControls() {
-    const group = document.getElementById('ftiResultFilter');
-    if (!group) return;
-    group.querySelectorAll('.fti-chip').forEach((btn) => {
-        btn.addEventListener('click', () => {
-            group.querySelectorAll('.fti-chip').forEach((b) => b.classList.remove('active'));
-            btn.classList.add('active');
-            ftiResultFilter = btn.getAttribute('data-result');
-            renderMatchTable();
-        });
-    });
 }
 
 /* --------------------------- Capital rotation --------------------------- */

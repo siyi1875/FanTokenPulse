@@ -75,7 +75,7 @@
                 <div class="timeline-header">
                     <div>
                         <h2>Key Events Timeline</h2>
-                        <p class="timeline-note">🟢 Green = Price Up | 🔴 Red = Price Down | All changes are day-over-day movements</p>
+                        <p class="timeline-note">Newest first · 🟢 Green = Price Up | 🔴 Red = Price Down · Recent matches auto-fetched from Fan Token Intel (measured −24h→+24h move)</p>
                     </div>
                     <div class="event-filters">
                         <button class="filter-btn active" data-filter="crypto">💎 Crypto Events</button>
@@ -93,43 +93,17 @@
                 </div>
             </div>
 
-            <!-- Fan Token Intel: measured match impact -->
+            <!-- Fan Token Intel: measured match-impact summary -->
             <div class="fti-section" id="ftiMatchImpact">
                 <div class="fti-header">
                     <div>
-                        <h2>📊 Measured Match Impact <span class="fti-badge">Fan Token Intel</span></h2>
-                        <p class="fti-note">Real, measured $PSG price reactions to recent fixtures — not estimates.
-                            <strong>During</strong> = kickoff → full-time · <strong>Postgame</strong> = full-time → +24h · <strong>24h</strong> = −24h → +24h window.</p>
+                        <h2>📊 Match Impact Summary <span class="fti-badge">Fan Token Intel</span></h2>
+                        <p class="fti-note">Aggregate of the auto-fetched matches now listed in the timeline above —
+                            how $PSG typically moves around a fixture (−24h → +24h window). Individual matches appear in
+                            <strong>Key Events Timeline</strong> with their measured price change.</p>
                     </div>
                 </div>
                 <div class="fti-summary" id="ftiSummary"></div>
-                <div class="fti-controls">
-                    <div class="fti-chip-group" id="ftiResultFilter">
-                        <button class="fti-chip active" data-result="all">All</button>
-                        <button class="fti-chip" data-result="win">Wins</button>
-                        <button class="fti-chip" data-result="draw">Draws</button>
-                        <button class="fti-chip" data-result="loss">Losses</button>
-                    </div>
-                    <span class="fti-hint" id="ftiMatchHint"></span>
-                </div>
-                <div class="fti-table-wrap">
-                    <table class="fti-table" id="ftiMatchTable">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Match</th>
-                                <th class="hide-sm">Competition</th>
-                                <th>Result</th>
-                                <th class="num">During</th>
-                                <th class="num hide-sm">Postgame</th>
-                                <th class="num">24h</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ftiMatchBody">
-                            <tr><td colspan="7" class="fti-empty">Loading measured match impact…</td></tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
             <!-- Fan Token Intel: capital rotation across the Chiliz fan-token universe -->

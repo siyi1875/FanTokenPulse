@@ -399,6 +399,10 @@ header {
 }
 
 .event-item.defeat {
+    border-left-color: var(--danger);
+}
+
+.event-item.draw {
     border-left-color: var(--text-muted);
 }
 
