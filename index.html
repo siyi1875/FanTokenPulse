@@ -145,30 +145,33 @@
             </div>
         </div>
 
-        <!-- 5. Capital rotation -->
-        <section class="card rotation-card" id="ftiRotation">
-            <div class="rotation-head">
-                <div class="rotation-head-titles">
-                    <span class="eyebrow">Fan Token Intel · Last 24h</span>
-                    <h2>Fan Token Capital Rotation</h2>
-                    <p class="body-text">Where volume is flowing across the Chiliz fan tokens. Relative change strips out the market-wide move (token change minus universe median).</p>
+        <!-- 5. Match result correlation -->
+        <section class="card corr-card" id="ftiCorrelation">
+            <div class="corr-head">
+                <div class="corr-head-titles">
+                    <span class="eyebrow">Fan Token Intel · <span id="corrWindow">Last 12 months</span></span>
+                    <h2>Match Result Correlation</h2>
+                    <p class="body-text">How $PSG moves after a win, draw or loss, measured from 24h before kick-off to 24h after. Medians sit next to averages because a single outlier can skew the mean.</p>
                 </div>
-                <div class="rotation-stats" id="ftiRotationStats"></div>
+                <div class="corr-stats" id="corrStats"></div>
             </div>
             <div class="table-wrap">
                 <table class="ds-table">
                     <thead>
                         <tr>
-                            <th>Token</th>
-                            <th class="num">Price</th>
-                            <th class="num">24h Volume Δ</th>
-                            <th class="num">Relative Δ</th>
-                            <th class="num">Flow</th>
+                            <th>Result</th>
+                            <th class="num">Matches</th>
+                            <th class="num">During</th>
+                            <th class="num">Postgame</th>
+                            <th class="num">Avg 24h</th>
+                            <th>Median 24h</th>
+                            <th class="num">Up after 24h</th>
                         </tr>
                     </thead>
-                    <tbody id="ftiRotationBody"></tbody>
+                    <tbody id="corrBody"></tbody>
                 </table>
             </div>
+            <p class="corr-note">Correlation is Spearman’s rank correlation between the result (win = 1, draw = 0, loss = −1) and the 24h price move. During = kick-off to full-time, Postgame = full-time to +24h. Descriptive only: past reactions don’t predict future moves.</p>
         </section>
     </main>
 
@@ -180,7 +183,7 @@
                     <div class="footer-col-body">Binance API (primary), CoinGecko for market cap</div>
                 </div>
                 <div>
-                    <div class="footer-col-title">Match Impact &amp; Rotation</div>
+                    <div class="footer-col-title">Match Impact &amp; Correlation</div>
                     <div class="footer-col-body">Fan Token Intel MCP. Snapshot <span id="ftiGeneratedAt">—</span></div>
                 </div>
                 <div>

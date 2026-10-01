@@ -19,7 +19,7 @@ An interactive dashboard showing the correlation between Paris Saint-Germain (PS
 - **Responsive Design**: Fully responsive layout optimized for desktop, tablet, and mobile devices
 - **Auto-refresh**: Automatic data updates every 5 minutes
 - **📊 Self-updating Key Events** (powered by [Fan Token Intel](https://www.fantokenintel.com)): recent PSG fixtures are **auto-fetched** and merged into the Key Events timeline and price chart, each with a *real, measured* price change — so the timeline never goes stale. A summary panel shows the average move around a match and how often $PSG rises during one. The timeline is sorted **newest → oldest**.
-- **🔄 Fan Token Capital Rotation**: See where volume is flowing across the ~65 Chiliz fan tokens over the last 24h, with market-adjusted ("relative") change so a market-wide move doesn't read as rotation. PSG is highlighted when it appears.
+- **📈 Match Result Correlation**: How $PSG moves after a win, draw or loss — average and median price change during the match, postgame and over the full 24h window, how often it ends up higher, plus a Spearman rank correlation between result and price move.
 - **Resilient price cards**: If CoinGecko and Binance both fail (CORS / rate limits), the header stats fall back to Fan Token Intel's baked candle data instead of getting stuck on "Loading…".
 
 ## 📊 Key Events Tracked
@@ -105,7 +105,7 @@ still plain static HTML/CSS/vanilla JS. Poppins loads from Google Fonts (swap in
 
 ## 🧠 Fan Token Intel (FTI) Integration
 
-The "Measured Match Impact" and "Capital Rotation" panels are powered by the
+The match events, "Match Impact Summary" and "Match Result Correlation" panels are powered by the
 [Fan Token Intel](https://www.fantokenintel.com) MCP server, which provides
 descriptive market + match-event data for ~65 Chiliz fan tokens.
 
@@ -125,8 +125,8 @@ This regenerates `data/fti.json` from these **anonymous** FTI tools:
 
 | FTI tool | Powers |
 | --- | --- |
-| `tokenintel_match_impact_history` | Auto-fetched match events in the Key Events timeline/chart + summary |
-| `tokenintel_capital_rotation` | Cross-token capital-rotation panel |
+| `tokenintel_match_impact_history` | Auto-fetched match events in the timeline/chart, summary, and win/draw/loss correlation |
+| `tokenintel_capital_rotation` | Still in the snapshot, not currently shown |
 | `tokenintel_price_candles` | Resilient price-card fallback |
 
 ### Keeping it fresh automatically
@@ -162,7 +162,7 @@ deliberately uses only the anonymous tools, so it works out of the box.
 - **JavaScript (ES6+)**: Async/await, fetch API, event handling
 - **Chart.js v4**: Interactive and responsive charts
 - **CoinGecko API**: Real-time and historical cryptocurrency data
-- **Fan Token Intel MCP**: Measured match-impact & cross-token capital-rotation data (baked via Node)
+- **Fan Token Intel MCP**: Measured match-impact data (baked via Node)
 - **Node.js 18+**: Build-time data fetcher (`fetch-fti-data.js`, zero dependencies)
 - **Chart.js Plugins**:
   - chartjs-adapter-date-fns: Time scale support
@@ -228,7 +228,7 @@ Contributions are welcome! To contribute:
 
 ### Ideas for Contributions
 - Add more PSG events and milestones
-- ~~Implement comparison with other fan tokens (JUV, BAR, etc.)~~ ✅ Done via FTI capital rotation
+- Implement comparison with other fan tokens (JUV, BAR, etc.)
 - Add correlation analysis with social media sentiment *(FTI `tokenintel_social_sentiment` — needs a free API key)*
 - Overlay FTI measured-match markers directly on the main price chart
 - Create downloadable reports/charts
