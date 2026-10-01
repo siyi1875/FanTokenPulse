@@ -3,154 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PSG Fan Token Pulse - Price & Events Dashboard</title>
+    <title>$PSG Pulse — PSG Fan Token Price & Events</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <div class="logo-section">
-                    <h1>PSG Fan Token Pulse</h1>
-                    <p class="subtitle">Track $PSG Token Price & Team Performance</p>
+    <header>
+        <div class="header-inner">
+            <div class="brand">
+                <span class="brand-mark" aria-label="FanTokens">
+                    <svg width="24" height="27" viewBox="0 0 24 27" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                        <path fill="currentColor" fill-rule="evenodd" d="M12 0C5.82 0 1 6.04 1 13.5S5.82 27 12 27s11-6.04 11-13.5S18.18 0 12 0Zm0 6.1c2.78 0 4.9 3.3 4.9 7.4s-2.12 7.4-4.9 7.4-4.9-3.3-4.9-7.4S9.22 6.1 12 6.1Z"/>
+                    </svg>
+                </span>
+                <span class="brand-name">FanTokens</span>
+                <span class="brand-divider"></span>
+                <span class="brand-sub">$PSG Pulse</span>
+            </div>
+            <div class="status">
+                <span class="live-dot"></span>
+                <span class="status-text">Updated <span id="lastUpdated">—</span></span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 2. Token overview -->
+        <section class="card overview">
+            <div class="overview-id-block">
+                <img class="overview-coin" src="assets/psg-fantoken.png" alt="$PSG fan token">
+                <div class="overview-id">
+                    <div class="overview-id-row">
+                        <span class="eyebrow">Paris Saint-Germain</span>
+                        <span class="overview-ticker">$PSG</span>
+                    </div>
+                    <div class="overview-price-row">
+                        <span class="overview-price" id="currentPrice">$0.0000</span>
+                        <span class="badge badge-neutral" id="priceChange">—</span>
+                        <span class="overview-price-src">24h · <span id="priceSource">Binance</span></span>
+                    </div>
                 </div>
             </div>
-        </header>
-
-        <div class="dashboard">
-            <div class="info-panel">
-                <div class="stat-card">
-                    <h3>Current Price</h3>
-                    <p id="currentPrice" class="stat-value">Loading...</p>
-                    <p class="stat-change" id="priceChange">-</p>
+            <div class="overview-stats">
+                <div class="stat-cell">
+                    <span class="stat-label">All-Time High</span>
+                    <span class="stat-value">$58.79</span>
+                    <span class="stat-sub">April 2021</span>
                 </div>
-                <div class="stat-card">
-                    <h3>All-Time High</h3>
-                    <p class="stat-value">$58.79</p>
-                    <p class="stat-date">April 2021</p>
+                <div class="stat-cell">
+                    <span class="stat-label">Market Cap</span>
+                    <span class="stat-value" id="marketCap">—</span>
+                    <span class="stat-sub">Circulating supply</span>
                 </div>
-                <div class="stat-card">
-                    <h3 id="marketCapLabel">Market Cap</h3>
-                    <p id="marketCap" class="stat-value">Loading...</p>
-                    <p class="stat-sublabel">Circulating Supply</p>
-                </div>
-                <div class="stat-card">
-                    <h3>24h Volume</h3>
-                    <p id="volume24h" class="stat-value">Loading...</p>
+                <div class="stat-cell">
+                    <span class="stat-label">24h Volume</span>
+                    <span class="stat-value" id="volume24h">—</span>
+                    <span class="stat-sub">USD</span>
                 </div>
             </div>
+        </section>
 
-            <div class="chart-container">
-                <div class="chart-header">
-                    <h2>$PSG Token Price History with Key Events</h2>
-                    <div class="chart-controls-wrapper">
-                        <div class="chart-controls">
-                            <button class="time-btn active" data-days="max">All Time</button>
-                            <button class="time-btn" data-days="365">1Y</button>
-                            <button class="time-btn" data-days="180">6M</button>
-                            <button class="time-btn" data-days="90">3M</button>
-                            <button class="time-btn" data-days="30">1M</button>
+        <!-- 3. Price chart -->
+        <section class="card chart-card">
+            <div class="chart-head">
+                <div class="chart-head-titles">
+                    <span class="eyebrow">Price History</span>
+                    <h2>$PSG Price with Key Events</h2>
+                </div>
+                <div class="chart-controls">
+                    <div class="range-tabs" id="rangeTabs">
+                        <button class="range-tab active" data-days="30">1M</button>
+                        <button class="range-tab" data-days="90">3M</button>
+                        <button class="range-tab" data-days="180">6M</button>
+                        <button class="range-tab" data-days="365">1Y</button>
+                        <button class="range-tab" data-days="max">All Time</button>
+                    </div>
+                    <button class="btn-outline" id="resetZoomBtn">Reset Zoom</button>
+                </div>
+            </div>
+            <div class="chart-area">
+                <canvas id="priceChart"></canvas>
+                <div class="chart-overlay" id="chartLoading">
+                    <p class="ov-loading">Loading price history…</p>
+                </div>
+                <div class="chart-overlay" id="chartError" hidden>
+                    <p class="ov-error-title">Price chart unavailable</p>
+                    <p class="ov-error-sub">Binance and Fan Token Intel data could not be loaded. Events are still listed below.</p>
+                </div>
+            </div>
+            <div class="chart-foot">
+                <div class="legend">
+                    <span class="legend-item"><span class="legend-dot" style="background:var(--lime-50);--ring:var(--lime-80)"></span>Token milestone</span>
+                    <span class="legend-item"><span class="legend-dot" style="background:var(--green-50);--ring:var(--green-50)"></span>Win / Trophy</span>
+                    <span class="legend-item"><span class="legend-dot" style="background:var(--red-50);--ring:var(--red-50)"></span>Loss / Departure</span>
+                    <span class="legend-item"><span class="legend-dot" style="background:var(--blue-50);--ring:var(--blue-50)"></span>Signing</span>
+                    <span class="legend-item"><span class="legend-dot" style="background:var(--orange-50);--ring:var(--orange-50)"></span>Rumor</span>
+                    <span class="legend-item"><span class="legend-dot" style="background:var(--grey-100);--ring:var(--grey-100)"></span>Draw</span>
+                </div>
+                <p class="chart-hint">Scroll to zoom, drag to pan. Hover a marker for event details. Source: <span id="chartSource">Binance daily close</span>.</p>
+            </div>
+        </section>
+
+        <!-- 4. Timeline + sidebar -->
+        <div class="columns">
+            <div class="col-timeline">
+                <section class="card events-card">
+                    <div class="events-head">
+                        <div class="events-head-top">
+                            <div class="events-head-titles">
+                                <span class="eyebrow">Timeline</span>
+                                <h2>Key Events</h2>
+                            </div>
+                            <span class="events-count" id="eventsCount">—</span>
                         </div>
-                        <button class="reset-zoom-btn" id="resetZoomBtn" title="Reset zoom and pan">🔍 Reset Zoom</button>
+                        <div class="filter-chips" id="filterChips">
+                            <button class="chip active" data-filter="crypto">Crypto Events</button>
+                            <button class="chip active" data-filter="games">Key Games</button>
+                            <button class="chip active" data-filter="transfers">Transfers</button>
+                        </div>
+                        <p class="events-note">Newest first. Match results marked FTI are fetched from Fan Token Intel, with the measured price move from 24h before kick-off to 24h after.</p>
                     </div>
-                </div>
-                <div class="chart-wrapper">
-                    <canvas id="priceChart"></canvas>
-                </div>
-                <div class="loading" id="loadingIndicator">
-                    <div class="spinner"></div>
-                    <p>Loading price data from Binance...</p>
-                </div>
-                <div class="chart-hint">
-                    <p>💡 <strong>Tip:</strong> Scroll to zoom, drag to pan the chart timeline • Hover over dates to see event details</p>
-                </div>
+                    <div id="timelineContainer"></div>
+                    <div class="events-foot" id="eventsFoot" hidden>
+                        <button class="btn-outline" id="showMoreBtn">Show 12 more</button>
+                    </div>
+                </section>
             </div>
 
-            <div class="events-timeline">
-                <div class="timeline-header">
-                    <div>
-                        <h2>Key Events Timeline</h2>
-                        <p class="timeline-note">Newest first · 🟢 Green = Price Up | 🔴 Red = Price Down · Recent matches auto-fetched from Fan Token Intel (measured −24h→+24h move)</p>
+            <div class="col-sidebar">
+                <section class="card summary-card" id="ftiMatchImpact">
+                    <div class="chart-head-titles">
+                        <span class="eyebrow">Fan Token Intel</span>
+                        <h2>Match Impact Summary</h2>
                     </div>
-                    <div class="event-filters">
-                        <button class="filter-btn active" data-filter="crypto">💎 Crypto Events</button>
-                        <button class="filter-btn active" data-filter="games">⚽ Key Games</button>
-                        <button class="filter-btn active" data-filter="transfers">👤 Transfers</button>
-                    </div>
-                </div>
-
-                <div id="timelineContainer" class="timeline">
-                    <!-- Timeline will be dynamically generated by JavaScript -->
-                    <div class="loading-timeline">
-                        <div class="spinner"></div>
-                        <p>Loading events...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fan Token Intel: measured match-impact summary -->
-            <div class="fti-section" id="ftiMatchImpact">
-                <div class="fti-header">
-                    <div>
-                        <h2>📊 Match Impact Summary <span class="fti-badge">Fan Token Intel</span></h2>
-                        <p class="fti-note">Aggregate of the auto-fetched matches now listed in the timeline above —
-                            how $PSG typically moves around a fixture (−24h → +24h window). Individual matches appear in
-                            <strong>Key Events Timeline</strong> with their measured price change.</p>
-                    </div>
-                </div>
-                <div class="fti-summary" id="ftiSummary"></div>
-            </div>
-
-            <!-- Fan Token Intel: capital rotation across the Chiliz fan-token universe -->
-            <div class="fti-section" id="ftiRotation">
-                <div class="fti-header">
-                    <div>
-                        <h2>🔄 Fan Token Capital Rotation <span class="fti-badge">Fan Token Intel</span></h2>
-                        <p class="fti-note">Where volume is flowing across the ~65 Chiliz fan tokens over the last 24h.
-                            <strong>Relative</strong> change strips out the market-wide move (token change − universe median).</p>
-                    </div>
-                </div>
-                <div class="fti-rotation-stats" id="ftiRotationStats"></div>
-                <div class="fti-table-wrap">
-                    <table class="fti-table" id="ftiRotationTable">
-                        <thead>
-                            <tr>
-                                <th>Token</th>
-                                <th class="num">Price</th>
-                                <th class="num hide-sm">24h Vol Δ</th>
-                                <th class="num">Relative Δ</th>
-                                <th>Flow</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ftiRotationBody">
-                            <tr><td colspan="5" class="fti-empty">Loading capital rotation…</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="data-sources">
-                <h3>Data Sources</h3>
-                <ul>
-                    <li><strong>Price & Market Data:</strong> <a href="https://www.coingecko.com/en/coins/paris-saint-germain-fan-token" target="_blank">CoinGecko API</a> (primary) with Binance fallback</li>
-                    <li><strong>Historical Price:</strong> <a href="https://www.binance.com/en/trade/PSG_USDT" target="_blank">Binance API</a></li>
-                    <li><strong>Match Impact & Capital Rotation:</strong> <a href="https://www.fantokenintel.com" target="_blank">Fan Token Intel</a> MCP (descriptive data — not financial advice)</li>
-                    <li><strong>Team Events:</strong> Transfermarkt, Goal.com, ESPN, Official PSG sources</li>
-                    <li><strong>FTI snapshot generated:</strong> <span id="ftiGeneratedAt">-</span></li>
-                    <li><strong>Last Updated:</strong> <span id="lastUpdated">-</span></li>
-                </ul>
+                    <p class="body-text">How $PSG typically moves around a fixture, across the matches in the timeline (−24h to +24h window).</p>
+                    <div class="summary-grid" id="ftiSummary"></div>
+                </section>
             </div>
         </div>
 
-        <footer>
-            <p>Built with ❤️ for PSG fans | Data from CoinGecko & Binance APIs | Not financial advice</p>
-        </footer>
-    </div>
+        <!-- 5. Capital rotation -->
+        <section class="card rotation-card" id="ftiRotation">
+            <div class="rotation-head">
+                <div class="rotation-head-titles">
+                    <span class="eyebrow">Fan Token Intel · Last 24h</span>
+                    <h2>Fan Token Capital Rotation</h2>
+                    <p class="body-text">Where volume is flowing across the Chiliz fan tokens. Relative change strips out the market-wide move (token change minus universe median).</p>
+                </div>
+                <div class="rotation-stats" id="ftiRotationStats"></div>
+            </div>
+            <div class="table-wrap">
+                <table class="ds-table">
+                    <thead>
+                        <tr>
+                            <th>Token</th>
+                            <th class="num">Price</th>
+                            <th class="num">24h Volume Δ</th>
+                            <th class="num">Relative Δ</th>
+                            <th class="num">Flow</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ftiRotationBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-col-title">Price &amp; Market Data</div>
+                    <div class="footer-col-body">Binance API (primary), CoinGecko for market cap</div>
+                </div>
+                <div>
+                    <div class="footer-col-title">Match Impact &amp; Rotation</div>
+                    <div class="footer-col-body">Fan Token Intel MCP. Snapshot <span id="ftiGeneratedAt">—</span></div>
+                </div>
+                <div>
+                    <div class="footer-col-title">Team Events</div>
+                    <div class="footer-col-body">Transfermarkt, Goal.com, ESPN, official PSG sources</div>
+                </div>
+            </div>
+            <p class="footer-legal">The data and content provided on this dashboard, including token prices, market conditions and match impact figures, is obtained from third-party sources and is descriptive only. It is not financial advice. Fan Tokens™ is a trademark of Mediarex Enterprises Limited.</p>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
     <script src="fti.js"></script>
