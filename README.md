@@ -20,6 +20,7 @@ An interactive dashboard showing the correlation between Paris Saint-Germain (PS
 - **Auto-refresh**: Automatic data updates every 5 minutes
 - **📊 Self-updating Key Events** (powered by [Fan Token Intel](https://www.fantokenintel.com)): recent PSG fixtures are **auto-fetched** and merged into the Key Events timeline and price chart, each with a *real, measured* price change — so the timeline never goes stale. A summary panel shows the average move around a match and how often $PSG rises during one. The timeline is sorted **newest → oldest**.
 - **📈 Match Result Correlation**: How $PSG moves after a win, draw or loss — average and median price change during the match, postgame and over the full 24h window, how often it ends up higher, plus a Spearman rank correlation between result and price move.
+- **🔥 Token burns on the chart**: every $PSG burn is read live from Chiliz Chain (transfers of $PSG to the zero address) and marked on the chart with a lime downward triangle, plus a timeline entry with the amount, the supply left afterwards and links to the on-chain transactions. If the explorer can't be reached, the page uses the verified list in `script.js`.
 - **Resilient price cards**: If CoinGecko and Binance both fail (CORS / rate limits), the header stats fall back to Fan Token Intel's baked candle data instead of getting stuck on "Loading…".
 
 ## 📊 Key Events Tracked
@@ -191,6 +192,7 @@ deliberately uses only the anonymous tools, so it works out of the box.
 
 - **Price Data**: [CoinGecko API](https://www.coingecko.com/en/coins/paris-saint-germain-fan-token) - Free tier with 30 calls/min
 - **Team Events**: Compiled from Transfermarkt, Goal.com, ESPN, and official PSG sources
+- **Token Burns**: [Chiliz Chain explorer](https://explorer.chiliz.com/token/0x6fc212cdE3b420733A88496CbdbB15d85beAb1Ca) — $PSG contract `0x6fc212cdE3b420733A88496CbdbB15d85beAb1Ca`. As of Oct 2026: 20,000,000 minted, 110,000 burned across three Socios performance burns (13 Jan, 16 Jan and 7 Feb 2021), 19,890,000 total supply.
 - **Exchange Listings**: Binance, Upbit announcements and trading data
 
 ## 🎨 Design Features

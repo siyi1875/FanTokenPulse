@@ -33,9 +33,35 @@ const TYPE_META = {
     'signing':      { kind: 'Signing',    group: 'blue' },
     'rumor':        { kind: 'Rumor',      group: 'warn' },
     'match-draw':   { kind: 'Draw',       group: 'neutral' },
+    'burn':         { kind: 'Burn',       group: 'token' },
 };
 
 const CATEGORY_LABEL = { crypto: 'Crypto', games: 'Match', transfers: 'Transfer' };
+
+// ------------------------------------------------------------------ Token burns
+// Burns are read live from Chiliz Chain (transfers of $PSG to the zero address),
+// so a new burn appears on the chart without a code change.
+const CHILIZ_EXPLORER = 'https://explorer.chiliz.com';
+const PSG_CONTRACT = '0x6fc212cdE3b420733A88496CbdbB15d85beAb1Ca';
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+// Match context for the verified Socios performance burns
+// (10,000 $PSG per goal + 20,000 per win).
+const BURN_CONTEXT = {
+    '2021-01-13': 'Performance burn for the Trophée des Champions win over Marseille (2-1): 10,000 per goal + 20,000 for the win.',
+    '2021-01-16': 'Performance burn for the 1-0 Ligue 1 win over Angers: 10,000 per goal + 20,000 for the win.',
+    '2021-02-07': 'Performance burn for the 2-0 Le Classique win at Marseille: 10,000 per goal + 20,000 for the win.',
+};
+
+// Verified on-chain (Oct 2026). Used only if the explorer can't be reached.
+const BURN_FALLBACK = {
+    minted: 20000000,
+    burns: [
+        { date: '2021-01-13', amount: 40000, txs: ['0x7e66e9ff3f6eab81b2807179abf3c4915b39bdb07a0de2c5a021958844bbb9e4', '0xd313321fa226814c63b8283743f8cb0bd761d33d870c5197c1e4d8fa6fe41349', '0xe9edf884440894b3f3ce32135b28c7df7209da5e8ac38601f580923f444285d3'] },
+        { date: '2021-01-16', amount: 30000, txs: ['0x0ff3ad28224751f98562210a1d384d16d41a7d10edfe460e8bc80662fd3c5c0a'] },
+        { date: '2021-02-07', amount: 40000, txs: ['0xec6d00adda76ac077c54e7a3d64502f86048ac31685401fbcd9c3c97abb194d8', '0xd8c612194198cf01eb4f3f4645c4911b0a21305fc54eccc76cae8120d7ea75c3'] },
+    ],
+};
 
 // ------------------------------------------------------------------ Curated events
 // Token launched Nov 2020. Labels are emoji-free; recent matches are auto-merged
@@ -79,8 +105,12 @@ let visibleCount = PAGE_SIZE;
 
 // ------------------------------------------------------------------ Init
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadFtiData();        // snapshot for event merge + fallbacks
+    const [, burnData] = await Promise.all([
+        loadFtiData(),          // snapshot for event merge + fallbacks
+        loadBurnData(),         // on-chain $PSG burns (fallback: verified list)
+    ]);
     mergeFtiMatchEvents();      // merge recent matches into the timeline
+    mergeBurnEvents(burnData);  // add token burns as events
     renderTimeline(true);       // show events immediately
     setupEventListeners();
 
@@ -103,10 +133,12 @@ function mergeFtiMatchEvents() {
     const matches = ftiData?.match_impact?.matches;
     if (!Array.isArray(matches) || matches.length === 0) return;
 
-    const existingDates = new Set(keyEvents.map((e) => e.date));
+    // Only curated *matches* take precedence; a transfer or burn on the same day
+    // shouldn't hide that day's FTI match.
+    const existingDates = new Set(keyEvents.filter((e) => e.filterCategory === 'games').map((e) => e.date));
     matches.forEach((m) => {
         const date = (m.date || '').slice(0, 10);
-        if (!date || existingDates.has(date)) return; // curated event wins
+        if (!date || existingDates.has(date)) return; // curated match wins
 
         const opponent = m.is_home ? m.away : m.home;
         const prefix = m.is_home ? 'vs' : 'at';
@@ -129,6 +161,63 @@ function mergeFtiMatchEvents() {
         });
         existingDates.add(date);
     });
+}
+
+// Read every $PSG transfer to/from the zero address: mints set the starting
+// supply, transfers *to* zero are burns. Grouped by UTC day.
+async function loadBurnData() {
+    const url =
+        `${CHILIZ_EXPLORER}/api?module=account&action=tokentx` +
+        `&contractaddress=${PSG_CONTRACT}&address=${ZERO_ADDRESS}&sort=asc&offset=1000&page=1`;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    try {
+        const res = await fetch(url, { signal: ctrl.signal });
+        if (!res.ok) throw new Error(`Explorer ${res.status}`);
+        const body = await res.json();
+        if (!Array.isArray(body.result)) throw new Error(body.message || 'Unexpected explorer response');
+
+        let minted = 0;
+        const byDay = new Map();
+        body.result.forEach((tx) => {
+            const amount = Number(tx.value) / 10 ** Number(tx.tokenDecimal || 0);
+            if (tx.from.toLowerCase() === ZERO_ADDRESS) {
+                minted += amount;
+            } else if (tx.to.toLowerCase() === ZERO_ADDRESS) {
+                const date = new Date(Number(tx.timeStamp) * 1000).toISOString().slice(0, 10);
+                const day = byDay.get(date) || { date, amount: 0, txs: [] };
+                day.amount += amount;
+                day.txs.push(tx.hash);
+                byDay.set(date, day);
+            }
+        });
+        if (!minted) throw new Error('No mint found');
+        return { minted, burns: [...byDay.values()], live: true };
+    } catch (err) {
+        console.warn('Chiliz explorer unavailable — using verified burn list.', err);
+        return { ...BURN_FALLBACK, live: false };
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+function mergeBurnEvents(data) {
+    if (!data || !Array.isArray(data.burns)) return;
+    let supply = data.minted;
+    [...data.burns]
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .forEach((b) => {
+            supply -= b.amount;
+            const context = BURN_CONTEXT[b.date] || `${b.amount.toLocaleString('en-US')} $PSG sent to the zero address on Chiliz Chain.`;
+            keyEvents.push({
+                date: b.date,
+                label: `Token Burn · ${b.amount.toLocaleString('en-US')} $PSG`,
+                description: `${context} Supply now ${supply.toLocaleString('en-US')}.`,
+                type: 'burn',
+                filterCategory: 'crypto',
+                txs: b.txs.filter((h) => /^0x[0-9a-f]{64}$/i.test(h)), // only well-formed hashes become links
+            });
+        });
 }
 
 // ------------------------------------------------------------------ Current stats
@@ -315,8 +404,11 @@ function createPriceChart() {
                     backgroundColor: markers.map((m) => m._dot),
                     borderColor: markers.map((m) => m._ring),
                     borderWidth: 1.5,
-                    pointRadius: 6,
-                    pointHoverRadius: 9,
+                    // Burns: downward triangle (supply going down); everything else: dot.
+                    pointStyle: markers.map((m) => (m.event.type === 'burn' ? 'triangle' : 'circle')),
+                    rotation: markers.map((m) => (m.event.type === 'burn' ? 180 : 0)),
+                    pointRadius: markers.map((m) => (m.event.type === 'burn' ? 8 : 6)),
+                    pointHoverRadius: markers.map((m) => (m.event.type === 'burn' ? 11 : 9)),
                     pointHitRadius: 20,
                     order: 1,
                 },
@@ -464,6 +556,18 @@ function badgeHtml(priceChange) {
     return `<span class="badge ${up ? 'badge-up' : 'badge-down'}">${escapeHtml(priceChange)}</span>`;
 }
 
+// On-chain proof links for burn events (hashes are validated in mergeBurnEvents).
+function txLinksHtml(txs) {
+    if (!Array.isArray(txs) || txs.length === 0) return '';
+    const links = txs
+        .map((h, i) => {
+            const text = txs.length === 1 ? 'View transaction' : `Tx ${i + 1}`;
+            return `<a href="${CHILIZ_EXPLORER}/tx/${h}" target="_blank" rel="noopener">${text}</a>`;
+        })
+        .join('<span class="event-links-sep">·</span>');
+    return `<div class="event-links">On-chain: ${links}</div>`;
+}
+
 function renderTimeline(reset) {
     if (reset) visibleCount = PAGE_SIZE;
 
@@ -499,6 +603,7 @@ function renderTimeline(reset) {
                         </div>
                         <div class="event-title">${escapeHtml(event.label)}</div>
                         <div class="event-desc">${escapeHtml(event.description)}</div>
+                        ${txLinksHtml(event.txs)}
                     </div>
                     <div class="event-change">${badgeHtml(event.priceChange)}</div>
                 </div>`;
