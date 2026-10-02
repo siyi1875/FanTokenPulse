@@ -455,10 +455,10 @@ main {
     align-items: flex-start;
 }
 .col-timeline { flex: 1 1 600px; min-width: 0; }
+/* Not sticky: with the Token Burns card the sidebar is taller than most
+   viewports, and a stuck sidebar would hide its lower half. */
 .col-sidebar {
     flex: 1 1 340px;
-    position: sticky;
-    top: 104px;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -576,6 +576,33 @@ main {
 .tile-value.up { color: var(--green-50); }
 .tile-value.down { color: var(--red-50); }
 .tile-label { font-size: 12px; font-weight: 500; color: var(--ink-subtle); }
+
+/* ----------------------------- Token burns ---------------------------- */
+.burns-card[hidden] { display: none; }
+.burn-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--divider);
+}
+.burn-row {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--divider);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.burn-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+.burn-amount { font-size: 16px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.burn-date { font-size: 12px; font-weight: 600; color: var(--ink-subtle); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.burn-event { font-size: 14px; font-weight: 500; color: var(--ink-2); }
+.burn-meta { font-size: 12px; font-weight: 500; color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
+.burns-foot { display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: 600; }
 
 /* ------------------------ Match result correlation -------------------- */
 .corr-card { overflow: hidden; }
@@ -707,7 +734,6 @@ footer {
     .overview-stats { border-left: none; }
     .stat-cell { padding: 8px 0; }
     .stat-cell + .stat-cell { border-left: none; }
-    .col-sidebar { position: static; }
     .corr-stats { gap: 16px 0; }
     .corr-stat:first-child { padding-left: 0; border-left: none; }
     .footer-inner { padding: 24px 16px; }

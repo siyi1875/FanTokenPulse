@@ -46,12 +46,14 @@ const PSG_CONTRACT = '0x6fc212cdE3b420733A88496CbdbB15d85beAb1Ca';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 // Match context for the verified Socios performance burns
-// (10,000 $PSG per goal + 20,000 per win).
-const BURN_CONTEXT = {
-    '2021-01-13': 'Performance burn for the Trophée des Champions win over Marseille (2-1): 10,000 per goal + 20,000 for the win.',
-    '2021-01-16': 'Performance burn for the 1-0 Ligue 1 win over Angers: 10,000 per goal + 20,000 for the win.',
-    '2021-02-07': 'Performance burn for the 2-0 Le Classique win at Marseille: 10,000 per goal + 20,000 for the win.',
+// (10,000 $PSG per goal + 20,000 per win). `event` is the short name shown in
+// the Token Burns card; `match` reads naturally inside the timeline sentence.
+const BURN_EVENTS = {
+    '2021-01-13': { event: 'Trophée des Champions · PSG 2-1 Marseille', match: 'Trophée des Champions win over Marseille (2-1)' },
+    '2021-01-16': { event: 'Ligue 1 · PSG 1-0 Angers', match: '1-0 Ligue 1 win over Angers' },
+    '2021-02-07': { event: 'Ligue 1 · Marseille 0-2 PSG', match: '2-0 Le Classique win at Marseille' },
 };
+const BURNS_ALL_URL = `${CHILIZ_EXPLORER}/address/${ZERO_ADDRESS}/tokens/${PSG_CONTRACT}/token-transfers`;
 
 // Verified on-chain (Oct 2026). Used only if the explorer can't be reached.
 const BURN_FALLBACK = {
@@ -110,7 +112,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadBurnData(),         // on-chain $PSG burns (fallback: verified list)
     ]);
     mergeFtiMatchEvents();      // merge recent matches into the timeline
-    mergeBurnEvents(burnData);  // add token burns as events
+    const burnRows = buildBurnRows(burnData);
+    mergeBurnEvents(burnRows);  // add token burns as events
+    renderBurnsCard(burnData, burnRows);
     renderTimeline(true);       // show events immediately
     setupEventListeners();
 
@@ -201,23 +205,91 @@ async function loadBurnData() {
     }
 }
 
-function mergeBurnEvents(data) {
-    if (!data || !Array.isArray(data.burns)) return;
+// Oldest-first rows with the supply left after each burn. Shared by the chart,
+// the timeline and the Token Burns card so all three show the same numbers.
+function buildBurnRows(data) {
+    if (!data || !Array.isArray(data.burns)) return [];
     let supply = data.minted;
-    [...data.burns]
+    return [...data.burns]
         .sort((a, b) => a.date.localeCompare(b.date))
-        .forEach((b) => {
+        .map((b) => {
             supply -= b.amount;
-            const context = BURN_CONTEXT[b.date] || `${b.amount.toLocaleString('en-US')} $PSG sent to the zero address on Chiliz Chain.`;
-            keyEvents.push({
+            const known = BURN_EVENTS[b.date];
+            return {
                 date: b.date,
-                label: `Token Burn · ${b.amount.toLocaleString('en-US')} $PSG`,
-                description: `${context} Supply now ${supply.toLocaleString('en-US')}.`,
-                type: 'burn',
-                filterCategory: 'crypto',
+                amount: b.amount,
+                supplyAfter: supply,
+                event: known ? known.event : 'On-chain burn',
+                match: known ? known.match : null,
                 txs: b.txs.filter((h) => /^0x[0-9a-f]{64}$/i.test(h)), // only well-formed hashes become links
-            });
+            };
         });
+}
+
+function mergeBurnEvents(rows) {
+    rows.forEach((r) => {
+        const fmt = (n) => n.toLocaleString('en-US');
+        const context = r.match
+            ? `Performance burn for the ${r.match}: 10,000 per goal + 20,000 for the win.`
+            : `${fmt(r.amount)} $PSG sent to the zero address on Chiliz Chain.`;
+        keyEvents.push({
+            date: r.date,
+            label: `Token Burn · ${fmt(r.amount)} $PSG`,
+            description: `${context} Supply now ${fmt(r.supplyAfter)}.`,
+            type: 'burn',
+            filterCategory: 'crypto',
+            txs: r.txs,
+        });
+    });
+}
+
+// Sidebar "Token Burns" card: totals + one row per burn (newest first).
+function renderBurnsCard(data, rows) {
+    const card = document.getElementById('burnsCard');
+    if (!card) return;
+    if (!rows.length) {
+        card.hidden = true;
+        return;
+    }
+    const fmt = (n) => n.toLocaleString('en-US');
+    const burned = rows.reduce((s, r) => s + r.amount, 0);
+    const supply = data.minted - burned;
+    const tiles = [
+        { label: 'Total burned', value: fmt(burned) },
+        { label: 'Total supply', value: fmt(supply) },
+        { label: 'Burn events', value: String(rows.length) },
+        { label: 'Share of supply burned', value: `${((burned / data.minted) * 100).toFixed(2)}%` },
+    ];
+    document.getElementById('burnStats').innerHTML = tiles
+        .map((t) => `
+        <div class="tile">
+            <span class="tile-value">${t.value}</span>
+            <span class="tile-label">${t.label}</span>
+        </div>`)
+        .join('');
+
+    document.getElementById('burnList').innerHTML = [...rows]
+        .reverse()
+        .map((r) => {
+            const date = new Date(r.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+            return `
+            <li class="burn-row">
+                <div class="burn-row-top">
+                    <span class="burn-amount">${fmt(r.amount)} $PSG</span>
+                    <span class="burn-date">${date}</span>
+                </div>
+                <div class="burn-event">${escapeHtml(r.event)}</div>
+                <div class="burn-meta">Supply after: ${fmt(r.supplyAfter)}</div>
+                ${txLinksHtml(r.txs, 'Chiliz Chain')}
+            </li>`;
+        })
+        .join('');
+
+    document.getElementById('burnsAllLink').href = BURNS_ALL_URL;
+    document.getElementById('burnsSource').textContent = data.live
+        ? 'Live from the Chiliz Chain explorer.'
+        : 'Explorer unreachable — showing the verified list (Oct 2026).';
+    card.hidden = false;
 }
 
 // ------------------------------------------------------------------ Current stats
@@ -556,8 +628,8 @@ function badgeHtml(priceChange) {
     return `<span class="badge ${up ? 'badge-up' : 'badge-down'}">${escapeHtml(priceChange)}</span>`;
 }
 
-// On-chain proof links for burn events (hashes are validated in mergeBurnEvents).
-function txLinksHtml(txs) {
+// On-chain proof links for burn events (hashes are validated in buildBurnRows).
+function txLinksHtml(txs, prefix = 'On-chain') {
     if (!Array.isArray(txs) || txs.length === 0) return '';
     const links = txs
         .map((h, i) => {
@@ -565,7 +637,7 @@ function txLinksHtml(txs) {
             return `<a href="${CHILIZ_EXPLORER}/tx/${h}" target="_blank" rel="noopener">${text}</a>`;
         })
         .join('<span class="event-links-sep">·</span>');
-    return `<div class="event-links">On-chain: ${links}</div>`;
+    return `<div class="event-links">${prefix}: ${links}</div>`;
 }
 
 function renderTimeline(reset) {
